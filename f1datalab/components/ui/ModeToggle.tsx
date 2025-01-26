@@ -10,6 +10,7 @@ export function ModeToggle() {
   const { theme, setTheme } = useTheme();
   const [currentTheme, setCurrentTheme] = useState("system");
 
+  // Ensure the state matches the current theme on initial load
   useEffect(() => {
     if (theme) setCurrentTheme(theme);
   }, [theme]);
