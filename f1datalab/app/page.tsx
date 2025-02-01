@@ -5,9 +5,9 @@ import { TableDemo } from "@/components/structure/table"
 
 export default function Home() {
   return (
-    <div>
+    <div >
       <ModeToggle />
-      <TableDemo />
+      {/* <TableDemo /> */}
 
     </div>
   );

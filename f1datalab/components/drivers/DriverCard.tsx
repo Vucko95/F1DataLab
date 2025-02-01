@@ -10,7 +10,7 @@ import {
 export function DriverCard() {
     return (
 
-<Card className="h-[40vh] w-[70vh] p-4 flex flex-col items-center justify-between">
+<Card className="h-[40vh] w-[80vh] p-4 flex flex-col items-center justify-between">
 
   <CardHeader>
     <CardTitle>Card Title</CardTitle>
