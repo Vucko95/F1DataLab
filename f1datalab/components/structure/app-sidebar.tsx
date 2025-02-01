@@ -9,33 +9,33 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/structure/sidebar"
 
 // Menu items.
 const items = [
   {
     title: "Home",
-    url: "#",
+    url: "/",
     icon: Home,
   },
   {
     title: "Races",
-    url: "#",
+    url: "/races",
     icon: Inbox,
   },
   {
-    title: "Calendar",
-    url: "#",
+    title: "Drivers",
+    url: "/drivers",
     icon: Calendar,
   },
   {
-    title: "Search",
-    url: "#",
+    title: "Constructors",
+    url: "/constructors",
     icon: Search,
   },
   {
-    title: "Settings",
-    url: "#",
+    title: "Circuits",
+    url: "/circuits",
     icon: Settings,
   },
 ]
