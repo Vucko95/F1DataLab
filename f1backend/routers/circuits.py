@@ -64,7 +64,7 @@ router = APIRouter()
 #     return race_results
 
 # @router.get("/circuits/{year}")
-@router.get("/circuits/{year}")
+@router.get("/circuits/{year}",tags=["Circuits"],summary="Get all circuits for specified year." )
 def get_circuits(year: int, db: Session = Depends(get_database_session)):
     try:
         circuits = (
@@ -96,7 +96,7 @@ def get_circuits(year: int, db: Session = Depends(get_database_session)):
         return {"error": "An error occurred while processing the request"}
 
 
-@router.get("/circuits/winners/{circuit_id}")
+@router.get("/circuits/winners/{circuit_id}",tags=["Circuits"],summary="Get past 5 year winners for specific circuit.")
 def get_past_winners(circuit_id: int, db: Session = Depends(get_database_session)):
     try:
         current_year = datetime.now().year

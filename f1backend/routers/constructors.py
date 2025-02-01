@@ -10,7 +10,7 @@ from settings.db import get_database_session
 
 router = APIRouter()
 
-@router.get("/standings/constructors/{year}")
+@router.get("/standings/constructors/{year}",tags=["Constructor Standings"], summary="Get Constructors result for specified year.")
 async def constructor_standings(year: int, db: Session = Depends(get_database_session)):
     try:
         subquery_latest_race = (
@@ -48,7 +48,7 @@ async def constructor_standings(year: int, db: Session = Depends(get_database_se
         return {"error": "An error occurred while processing the request"}
     
 
-@router.get("/constructors/donut/{year}")
+@router.get("/constructors/donut/{year}",tags=["Constructor Standings"],summary="Get Constructor Standings Donut Chart"  )
 async def driver_standings(year: int, db: Session = Depends(get_database_session)):
     try:
         subquery_latest_race = (
@@ -91,7 +91,7 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
     
-@router.get("/constructors/bar/{year}")
+@router.get("/constructors/bar/{year}",tags=["Constructor Standings"],summary="Get Constructor Standings Bar Chart" )
 async def driver_standings(year: int, db: Session = Depends(get_database_session)):
     try:
         subquery_latest_race = (
@@ -145,7 +145,7 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
 
-@router.get("/constructors/graph/{year}")
+@router.get("/constructors/graph/{year}",tags=["Constructor Standings"],summary="Get Constructor Standings Graph Chart" )
 async def get_constructor_points_by_race(year: int, db: Session = Depends(get_database_session)):
     try:
         subquery_latest_race = (

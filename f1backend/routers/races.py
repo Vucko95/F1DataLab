@@ -77,7 +77,7 @@ def append_colors_to_labels(response_data):
 
     return response_data
 
-@router.get("/race/average/{raceId}")
+@router.get("/race/average/{raceId}",tags=["Race"],summary="Race Average" )
 async def get_driver_laptimes(raceId: int, db: Session = Depends(get_database_session)):
     try:
         lap_times_query = (
@@ -142,7 +142,7 @@ async def get_driver_laptimes(raceId: int, db: Session = Depends(get_database_se
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
 
-@router.get("/race/list/{year}")
+@router.get("/race/list/{year}",tags=["Race"],summary="List Races for specific year")
 async def get_driver_laptimes(year: int, db: Session = Depends(get_database_session)):
     try:
         current_date = datetime.now().date()
@@ -186,7 +186,7 @@ async def get_driver_laptimes(year: int, db: Session = Depends(get_database_sess
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
 
-@router.get("/race/results/{race_id}")
+@router.get("/race/results/{race_id}",tags=["Race"],summary="Get specific result for race with RaceID")
 def get_race_results(race_id: int, db: Session = Depends(get_database_session)):
     try:
         race_results = (
@@ -224,7 +224,7 @@ def get_race_results(race_id: int, db: Session = Depends(get_database_session)):
         return {"error": "An error occurred while processing the request"}
     
 
-@router.get("/qualy/results/{race_id}")
+@router.get("/qualy/results/{race_id}",tags=["Race"],summary="Get Qualifiying result for raceId.")
 def get_qualy_results(race_id: int, db: Session = Depends(get_database_session)):
     try:
         qualy_results = (
@@ -264,7 +264,7 @@ def get_qualy_results(race_id: int, db: Session = Depends(get_database_session))
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
     
-@router.get("/qualy/gap/{race_id}")
+@router.get("/qualy/gap/{race_id}",tags=["Race"],summary="Qualifinyg gap to 1st")
 def get_qualy_results(race_id: int, db: Session = Depends(get_database_session)):
     try:
         qualy_results = (
@@ -330,7 +330,7 @@ def get_qualy_results(race_id: int, db: Session = Depends(get_database_session))
 
 
     # SLOWER QUERRY 
-@router.get("/race/average/{raceId}")
+@router.get("/race/average/{raceId}",tags=["Race"],summary="Race Average['Slower query'] ")
 async def get_driver_laptimes(raceId: int, db: Session = Depends(get_database_session)):
     try:
         lap_times_query = (

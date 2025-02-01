@@ -15,7 +15,7 @@ router = APIRouter()
 
 
 
-@router.get("/race/next")
+@router.get("/race/next",tags=["Deprecated"],summary="Get next Race from DB")
 async def next_race(db: Session = Depends(get_database_session)):
     try:
         next_race_query = db.query(Race).filter(Race.date > datetime.now().date()).order_by(Race.date).first()
@@ -54,7 +54,7 @@ async def next_race(db: Session = Depends(get_database_session)):
 
 
 
-@router.get("/race/last")
+@router.get("/race/last",tags=["Deprecated"],summary="Get last race from current DB.")
 async def last_race(db: Session = Depends(get_database_session)):
     try:
         current_date = datetime.now().date()
@@ -111,7 +111,7 @@ async def last_race(db: Session = Depends(get_database_session)):
         return {"error": "Failed to fetch last race data"}
 
 
-@router.get("/race/date")
+@router.get("/race/date",tags=["Deprecated"],summary="Not sure why I need this.")
 async def next_race(db: Session = Depends(get_database_session)):
     try:
         next_race_query = db.query(Race).filter(Race.date > datetime.now().date()).order_by(Race.date).all()
@@ -140,7 +140,7 @@ def date_to_timestamp(date_object):
 
     return timestamp_ms
 
-@router.get("/race/last/api")
+@router.get("/race/last/api",tags=["Deprecated"],summary="Ergast API Query, last one Abu Dhabi 2024")
 def get_drivers(db: Session = Depends(get_database_session)):
     try:
         url = f"http://ergast.com/api/f1/current/last/results.json"

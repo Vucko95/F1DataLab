@@ -12,7 +12,7 @@ from settings.db import get_database_session
 router = APIRouter()
 
 
-@router.get("/standings/drivers/{year}/{race}")
+@router.get("/standings/drivers/{year}/{race}",tags=["Driver"],summary="Driver standigns for specific race.")
 async def driver_standings(year: int, race: int, db: Session = Depends(get_database_session)):
     
     try:
@@ -90,7 +90,7 @@ async def driver_standings(year: int, race: int, db: Session = Depends(get_datab
 
 
 
-@router.get("/drivers/donut/{year}")
+@router.get("/drivers/donut/{year}",tags=["Driver"],summary="Get Donut Chart for Driver standings")
 async def driver_standings(year: int, db: Session = Depends(get_database_session)):
     try:
         subquery_latest_race = (
@@ -134,7 +134,7 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
         return {"error": "An error occurred while processing the request"}
     
 
-@router.get("/drivers/bar/{year}")
+@router.get("/drivers/bar/{year}",tags=["Driver"],summary="Get Bar Chart for Driver standings")
 async def driver_standings(year: int, db: Session = Depends(get_database_session)):
     try:
         subquery_latest_race = (
@@ -192,7 +192,7 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
 
 
 
-@router.get("/drivers/graph/{year}")
+@router.get("/drivers/graph/{year}",tags=["Driver"],summary="Get Basic Chart for Driver standings")
 async def get_driver_points_by_race(year: int, db: Session = Depends(get_database_session)) -> dict:
     try:
         subquery_latest_race = (
