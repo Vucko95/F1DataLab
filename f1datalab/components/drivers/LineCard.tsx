@@ -17,34 +17,29 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-// const chartData = [
-//   { month: "January", desktop: 186, mobile: 80 },
-//   { month: "February", desktop: 305, mobile: 200 },
-//   { month: "March", desktop: 237, mobile: 120 },
-//   { month: "April", desktop: 73, mobile: 190 },
-//   { month: "May", desktop: 209, mobile: 130 },
-//   { month: "June", desktop: 214, mobile: 140 },
-// ]
-
-// const chartConfig = {
-//   desktop: {
-//     label: "Desktop",
-//     color: "hsl(var(--chart-1))",
-//   },
-//   mobile: {
-//     label: "Mobile",
-//     color: "hsl(var(--chart-2))",
-//   },
-// } satisfies ChartConfig
 
 const chartData = [
-    { race: "Race 1", verstappen: 0, hamilton: 0, leclerc: 0, norris: 0 },
-    { race: "Race 2", verstappen: 50, hamilton: 40, leclerc: 45, norris: 35 },
-    { race: "Race 3", verstappen: 90, hamilton: 85, leclerc: 80, norris: 95 }, // Norris jumps ahead
-    { race: "Race 4", verstappen: 130, hamilton: 140, leclerc: 120, norris: 110 }, // Hamilton takes the lead
-    { race: "Race 5", verstappen: 170, hamilton: 180, leclerc: 175, norris: 160 }, // Close battle between Hamilton & Leclerc
-    { race: "Race 6", verstappen: 220, hamilton: 200, leclerc: 230, norris: 190 }, // Leclerc wins overall
-  ];
+  { race: 1, verstappen: 0, hamilton: 0, leclerc: 0, norris: 0 },
+  { race: 2, verstappen: 50, hamilton: 30, leclerc: 40, norris: 25 },
+  { race: 3, verstappen: 100, hamilton: 70, leclerc: 85, norris: 65 },
+  { race: 4, verstappen: 190, hamilton: 110, leclerc: 140, norris: 110 },
+  { race: 5, verstappen: 192, hamilton: 190, leclerc: 180, norris: 150 },
+  { race: 6, verstappen: 270, hamilton: 220, leclerc: 210, norris: 200 },
+  { race: 7, verstappen: 330, hamilton: 290, leclerc: 280, norris: 230 },
+  { race: 8, verstappen: 380, hamilton: 330, leclerc: 350, norris: 260 },
+  { race: 9, verstappen: 430, hamilton: 380, leclerc: 390, norris: 300 },
+  { race: 10, verstappen: 480, hamilton: 380, leclerc: 450, norris: 340 },
+  { race: 11, verstappen: 530, hamilton: 380, leclerc: 510, norris: 380 },
+  { race: 12, verstappen: 580, hamilton: 385, leclerc: 570, norris: 420 },
+  { race: 13, verstappen: 630, hamilton: 420, leclerc: 620, norris: 460 },
+  { race: 14, verstappen: 690, hamilton: 640, leclerc: 670, norris: 500 },
+  { race: 15, verstappen: 740, hamilton: 700, leclerc: 740, norris: 540 },
+  { race: 16, verstappen: 800, hamilton: 750, leclerc: 780, norris: 580 },
+  { race: 17, verstappen: 950, hamilton: 820, leclerc: 850, norris: 620 },
+  { race: 18, verstappen: 1200, hamilton: 880, leclerc: 930, norris: 660 },
+  { race: 19, verstappen: 1300, hamilton: 940, leclerc: 1110, norris: 800 },
+  { race: 20, verstappen: 1350, hamilton: 1010, leclerc: 1160, norris: 1000 },
+];
   const chartConfig = {
     verstappen: {
       label: "Verstappen",
@@ -118,12 +113,6 @@ export function LineCard() {
     </LineChart>
         </ChartContainer>
       </CardContent>
-      {/* <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
-          <div className="grid gap-2">
-          </div>
-        </div>
-      </CardFooter> */}
     </Card>
   )
 }
