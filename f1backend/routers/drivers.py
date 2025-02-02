@@ -12,9 +12,50 @@ from settings.db import get_database_session
 router = APIRouter()
 
 
+@router.get("/standings/drivers/{year}",tags=["Driver Standings"],summary="Driver standigns for specific year.")
+async def driver_standings(year: int, db: Session = Depends(get_database_session)):
+    try:
+        driver_standings_query = (
+            db.query(
+                Driver.driverId,
+                Driver.forename,
+                Driver.surname,
+                Driver.nationality,
+                func.sum(Result.points).label("total_points"),
+                func.min(Result.raceId).label("raceId"),
+                func.min(Result.constructorId).label("constructorId")
+            )
+            .join(Result, Result.driverId == Driver.driverId)
+            .join(Race, Result.raceId == Race.raceId)
+            .filter(Race.year == year)
+            .group_by(Driver.driverId, Driver.forename, Driver.surname)
+            .order_by(func.sum(Result.points).desc())
+            .all()
+        )
+
+        driver_standings = []
+        for result in driver_standings_query:
+            driver_standings.append(
+                {
+                    "driverId": result.driverId,
+                    "raceId": result.raceId,
+                    "constructorId": result.constructorId,
+                    "forename": result.forename,
+                    "nationality": result.nationality,
+                    "surname": result.surname,
+                    "total_points": result.total_points
+                }
+            )
+
+        return driver_standings
+    except Exception as e:
+        print(f"An error occurred while processing the request: {str(e)}")
+        return {"error": "An error occurred while processing the request"}
+
+
 @router.get("/standings/drivers/{year}/{race}",tags=["Driver"],summary="Driver standigns for specific race.")
 async def driver_standings(year: int, race: int, db: Session = Depends(get_database_session)):
-    
+    # select * from races where year = 2023 order by round asc;
     try:
         latest_race_for_specified_year = (
             db.query(Race)
