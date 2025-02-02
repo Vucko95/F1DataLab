@@ -38,10 +38,13 @@ const fetchData = async (url: string, method: string = 'GET', body: any = null) 
     return await fetchData('http://localhost:8888/race/last');
   };
 
-  export const fetchDriverStandings = async (year: number, raceNumber: number) => {
+  export const fetchDriverStandingsYearRace = async (year: number, raceNumber: number) => {
     return await fetchData(`http://localhost:8888/standings/drivers/${year}/${raceNumber}`);
   };
 
+  export const fetchDriverStandingsYear = async (year: number) => {
+    return await fetchData(`http://localhost:8888/standings/drivers/${year}/`);
+  };
   
 
   export const fetchNumberOfRaces = async (year: number) => {
