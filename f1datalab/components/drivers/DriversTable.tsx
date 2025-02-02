@@ -1,91 +1,91 @@
+"use client";
+import { useEffect, useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
 import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "@/components/ui/table"
-  
-  const invoices = [
-    {
-      invoice: "INV001",
-      paymentStatus: "Paid",
-      totalAmount: "$250.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV002",
-      paymentStatus: "Pending",
-      totalAmount: "$150.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV003",
-      paymentStatus: "Unpaid",
-      totalAmount: "$350.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV004",
-      paymentStatus: "Paid",
-      totalAmount: "$450.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV005",
-      paymentStatus: "Paid",
-      totalAmount: "$550.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV006",
-      paymentStatus: "Pending",
-      totalAmount: "$200.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV007",
-      paymentStatus: "Unpaid",
-      totalAmount: "$300.00",
-      paymentMethod: "Credit Card",
-    },
-  ]
-  
-  export function DriversTable() {
-    return (
-      <Table>
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { fetchDriverStandingsYear } from "@/app/services/api"
+
+interface DriversTableProps {
+  year: number;
+}
+
+interface DriverStanding {
+  driverId: number;
+  raceId: number;
+  constructorId: number;
+  forename: string;
+  surname: string;
+  nationality: string;
+  total_points: number;
+}
+
+export function DriversTable({ year }: DriversTableProps) {
+  const [drivers, setDrivers] = useState<DriverStanding[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data: DriverStanding[] = await fetchDriverStandingsYear(year);
+        setDrivers(data);
+      } catch (error) {
+        console.error("Error fetching driver standings:", error);
+      }
+    };
+    // ADDING Mount due the hydration erros , which happens due the missmatch on server and client sidde.
+    if (isMounted) {
+      fetchData(); // fetch  data only after the component has mounted.
+    }
+  }, [year, isMounted]); // re-fetch data whenever year changes
+
+  if (!isMounted) {
+    return null; // render nothing on the server
+  }
+  return (
+
+    <Table>
+      <ScrollArea className="h-[40vh] rounded-md  p-4">
         <TableHeader>
           <TableRow>
-            <TableHead >Invoice</TableHead>
-            <TableHead >Invoice</TableHead>
-            <TableHead >Invoice</TableHead>
-            <TableHead >Invoice</TableHead>
-            <TableHead >Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+            <TableHead>Driver ID</TableHead>
+            <TableHead>Forename</TableHead>
+            <TableHead>Surname</TableHead>
+            <TableHead>Nationality</TableHead>
+            <TableHead>Total Points</TableHead>
+            <TableHead>Race ID</TableHead>
+            <TableHead>Constructor ID</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.invoice}>
-              <TableCell className="font-medium">{invoice.invoice}</TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
-              <TableCell>{invoice.paymentMethod}</TableCell>
-              <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+
+          {drivers.map((driver) => (
+            <TableRow key={driver.driverId}>
+              <TableCell>{driver.driverId}</TableCell>
+              <TableCell>{driver.forename}</TableCell>
+              <TableCell>{driver.surname}</TableCell>
+              <TableCell>{driver.nationality}</TableCell>
+              <TableCell>{driver.total_points}</TableCell>
+              <TableCell>{driver.raceId}</TableCell>
+              <TableCell>{driver.constructorId}</TableCell>
             </TableRow>
           ))}
+
         </TableBody>
-        {/* <TableFooter>
-          <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className="text-right">$2,500.00</TableCell>
-          </TableRow>
-        </TableFooter> */}
-      </Table>
-    )
-  }
-  
+      </ScrollArea>
+    </Table>
+
+  )
+}
