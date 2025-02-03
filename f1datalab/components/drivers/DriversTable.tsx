@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
+import Image from "next/image";
 import {
   Table,
   TableBody,
@@ -11,8 +11,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { fetchDriverStandingsYear } from "@/app/services/api"
+} from "@/components/ui/table";
+import { fetchDriverStandingsYear } from "@/app/services/api";
 
 interface DriversTableProps {
   year: number;
@@ -27,6 +27,26 @@ interface DriverStanding {
   nationality: string;
   total_points: number;
 }
+
+const nationalityToFlag: { [key: string]: string } = {
+  British: "gb",
+  Dutch: "nl",
+  German: "de",
+  Monegasque: "mc",
+  Finnish: "fi",
+  Australian: "au",
+  Mexican: "mx",
+  UnitedStates: "us",
+  French: "fr",
+  Spanish: "es",
+  Canadian: "ca",
+  Polish: "pl",
+  Japanese: "jp",
+  Thai: "th",
+  Danish: "dk",
+  Chinese: "cn",
+  "New Zealander": "nz",
+};
 
 export function DriversTable({ year }: DriversTableProps) {
   const [drivers, setDrivers] = useState<DriverStanding[]>([]);
@@ -54,38 +74,64 @@ export function DriversTable({ year }: DriversTableProps) {
   if (!isMounted) {
     return null; // render nothing on the server
   }
-  return (
 
+  return (
     <Table>
-      <ScrollArea className="h-[40vh] rounded-md  p-4">
+      <ScrollArea className="h-[40vh] rounded-md pb-4 ">
         <TableHeader>
           <TableRow>
-            <TableHead>Driver ID</TableHead>
-            <TableHead>Forename</TableHead>
-            <TableHead>Surname</TableHead>
-            <TableHead>Nationality</TableHead>
-            <TableHead>Total Points</TableHead>
-            <TableHead>Race ID</TableHead>
-            <TableHead>Constructor ID</TableHead>
+            <TableHead className="text-center">Driver ID</TableHead>
+            <TableHead className="text-center">Nationality</TableHead>
+            <TableHead className="text-center">Forename</TableHead>
+            <TableHead className="text-center">Surname</TableHead>
+            <TableHead className="text-center">Constructor</TableHead>
+            <TableHead className="text-center">Total Points</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-
-          {drivers.map((driver) => (
-            <TableRow key={driver.driverId}>
-              <TableCell>{driver.driverId}</TableCell>
-              <TableCell>{driver.forename}</TableCell>
-              <TableCell>{driver.surname}</TableCell>
-              <TableCell>{driver.nationality}</TableCell>
-              <TableCell>{driver.total_points}</TableCell>
-              <TableCell>{driver.raceId}</TableCell>
-              <TableCell>{driver.constructorId}</TableCell>
-            </TableRow>
-          ))}
-
+          {drivers.map((driver) => {
+            const nationalityFlag = nationalityToFlag[driver.nationality] || "us";
+            return (
+              <TableRow key={driver.driverId} className="text-center">
+                <TableCell>
+                  {driver.driverId}
+                  {/* TODO ! "MAYBE" DRIVERS LOGO INSTEAD ID */}
+                {/* <Image
+                    src={`/images/drivers/${driver.driverId}.webp`}
+                    alt="Driver Logo"
+                    width={30}
+                    height={30}
+                    className="rounded-xl"
+                  /> */}
+                </TableCell>
+                {/* TODO ! ISSUE WITH IMAGE BEING A BIT PUSHED DOWN WHEN USING FLEX JUSTIFY-CENTER */}
+                {/* <TableCell className="flex justify-center "> */}
+                <TableCell className="align-center pl-12 ">
+                  <Image
+                    src={`https://flagcdn.com/${nationalityFlag}.svg`}
+                    alt={`${driver.nationality} Flag`}
+                    width={20}
+                    height={20}
+                    className="rounded-sm"
+                  />
+                </TableCell>
+                <TableCell>{driver.forename}</TableCell>
+                <TableCell>{driver.surname}</TableCell>
+                <TableCell className="flex justify-center">
+                  <Image
+                    src={`/images/constructors/${driver.constructorId}.webp`}
+                    alt="Constructor Logo"
+                    width={25}
+                    height={25}
+                    className="rounded-sm"
+                    />
+                </TableCell>
+                <TableCell>{driver.total_points}</TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </ScrollArea>
     </Table>
-
-  )
+  );
 }
