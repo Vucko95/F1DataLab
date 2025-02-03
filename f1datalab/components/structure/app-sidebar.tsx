@@ -1,5 +1,6 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
 
+import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import Image from "next/image";
 import {
   Sidebar,
   SidebarContent,
@@ -9,7 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/structure/sidebar"
+} from "@/components/structure/sidebar";
 
 // Menu items.
 const items = [
@@ -38,14 +39,31 @@ const items = [
     url: "/circuits",
     icon: Settings,
   },
-]
+];
 
 export function AppSidebar() {
+
+
   return (
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="pt-2 text-lg">F1DataLab</SidebarGroupLabel>
+
+        <div className="absolute top-0 left-0 w-full h-[300px]" />
+            <Image
+              className="block dark:hidden"
+              src="/images/logo/light1.png"
+              alt="light-mode-image"
+              width={180}
+              height={180}
+            />
+            <Image
+              className="hidden dark:block"
+              src="/images/logo/dark1.png"
+              alt="dark-mode-image"
+              width={180}
+              height={180}
+            />
           <SidebarGroupContent>
             <SidebarMenu className="pt-5">
               {items.map((item) => (
@@ -63,5 +81,5 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }
