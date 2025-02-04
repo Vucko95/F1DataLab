@@ -10,25 +10,43 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
+interface LineCardPros {
+  year: number;
+}
 
-export function LineCard() {
+export function LineCard({ year }: LineCardPros) {
+
   const [chartData, setChartData] = useState<any[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // TODO ! REMOVE HARDCODED YEAR
-        const year = 2021; 
+        
         const data = await fetchDriversPointsForGraph(year);
-
+        // const data: DriverStandingTree[] = await fetchDriverStandingsYearBar(year);
         setChartData(data);
-        console.log(data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching driver standings:", error);
       }
     };
-    fetchData();
-  }, []);
+
+    if (isMounted) {
+      fetchData(); // Fetch data only after component mounts
+    }
+  }, [year, isMounted]);
+
+  if (!isMounted) {
+    return null; // Prevents hydration errors
+  }
+
+
+
+
   const color1 = getComputedStyle(document.documentElement).getPropertyValue('--chart-custom-color1').trim();
   const color2 = getComputedStyle(document.documentElement).getPropertyValue('--chart-custom-color2').trim();
   const color3 = getComputedStyle(document.documentElement).getPropertyValue('--chart-custom-color3').trim();
@@ -47,11 +65,21 @@ export function LineCard() {
   //   { race: 10, max_verstappen: 350, perez: 280, hamilton: 270 },
   // ]);
 
-  const driverColors: { [key: string]: string } = {
-    max_verstappen: color3,
-    perez: "hsl(var(--chart-2))",
-    hamilton: "hsl(var(--chart-3))",
-  };
+const driverColors: { [key: string]: string } = {
+  max_verstappen: "#3671C6",
+  perez: "#3671C6",
+  hamilton: "#00D2BE",
+  russell: "#00D2BE",
+  leclerc: "#DC0000",
+  sainz: "#DC0000",
+  norris: "#FF8700",
+  piastri: "#FF8700",
+  alonso: "#0090FF",
+  stroll: "#0090FF",
+  gasly: "#005AFF",
+  ocon: "#005AFF",
+  tsunoda: "#2B4562",
+};
 
   return (
     <Card className="h-[44vh] w-[78vh] pr-8 pt-3 flex flex-col items-center justify-between">
