@@ -4,7 +4,6 @@ import { TopSection } from "@/components/drivers/TopSection";
 import { DriverCard } from "@/components/drivers/DriverCard";
 import { TableCard } from "@/components/drivers/TableCard";
 import { BarCard } from "@/components/drivers/BarCard";
-import { PieCard } from "@/components/drivers/PieCard";
 import { TreeCard } from "@/components/drivers/TreeCard";
 import { LineCard } from "@/components/drivers/LineCard";
 import { ModeToggle } from "@/components/ui/ModeToggle"
