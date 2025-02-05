@@ -45,7 +45,14 @@ const fetchData = async (url: string, method: string = 'GET', body: any = null) 
   export const fetchDriverStandingsYear = async (year: number) => {
     return await fetchData(`http://localhost:8888/standings/drivers/${year}/`);
   };
+
+  export const fetchDriverStandingsYearTree = async (year: number) => {
+    return await fetchData(`http://localhost:8888/standings/drivers/${year}/treemap`);
+  };
   
+  export const fetchDriverStandingsYearBar = async (year: number) => {
+    return await fetchData(`http://localhost:8888/standings/drivers/${year}/barchart`);
+  };
 
   export const fetchNumberOfRaces = async (year: number) => {
     return await fetchData(`http://localhost:8888/race/list/${year}`);
@@ -64,7 +71,7 @@ const fetchData = async (url: string, method: string = 'GET', body: any = null) 
   };
   
   export const fetchDriversPointsForGraph = async (year: number) => {
-    return await fetchData(`http://localhost:8888/drivers/graph/${year}`);
+    return await fetchData(`http://localhost:8888/2drivers/graph/${year}`);
   };
   
   export const fetchConstructorsGraph = async () => {

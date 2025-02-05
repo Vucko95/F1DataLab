@@ -1,65 +1,93 @@
-"use client"
+"use client";
 
-import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip } from "recharts";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { ChartContainer, ChartTooltipContent, ChartConfig } from "@/components/ui/chart";
+import { fetchDriverStandingsYearBar } from "@/app/services/api";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-]
+interface BarGraphProps {
+  year: number;
+}
 
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "hsl(var(--chart-1))",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "hsl(var(--chart-2))",
-  },
-} satisfies ChartConfig
+interface DriverStandingTree {
+  driverId: number;
+  raceId: number;
+  constructorId: number;
+  forename: string;
+  surname: string;
+  nationality: string;
+  total_points: number;
+  color: string;
+}
 
-export function BarCard() {
+export function BarCard({ year }: BarGraphProps) {
+  const [drivers, setDrivers] = useState<DriverStandingTree[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data: DriverStandingTree[] = await fetchDriverStandingsYearBar(year);
+        setDrivers(data);
+      } catch (error) {
+        console.error("Error fetching driver standings:", error);
+      }
+    };
+
+    if (isMounted) {
+      fetchData(); // Fetch data only after component mounts
+    }
+  }, [year, isMounted]);
+
+  if (!isMounted) {
+    return null; // Prevents hydration errors
+  }
+
+  const chartData = drivers.map((driver) => ({
+    name: driver.forename,
+    value: driver.total_points,
+    color: driver.color,
+  }));
   return (
- <Card className="h-[40vh] w-[80vh] flex flex-col items-center justify-between ">  
-      <CardContent className="h-[30vh] w-[70vh]  ">
-        <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData}>
-            <CartesianGrid vertical={false} />
+    <Card className="h-[44vh] w-[78vh] pr-8 flex flex-col items-center justify-between">
+      <CardHeader
+        className="absolute">
+        <h1>Average Driver Points per Race</h1>
+      </CardHeader>
+      <CardContent className="w-[80vh] pt-2">
+        <ChartContainer config={{}}>
+          <BarChart data={chartData}>
             <XAxis
-              dataKey="month"
-              tickLine={false}
-              tickMargin={10}
               axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
+              tickLine={false}
+              dataKey="name"
+              tickFormatter={(name) => name?.slice(0, 3)}
+              tick={{ fontSize: 15, fontWeight: "bold", fill: "#888" }}
             />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="dashed" />}
+            <YAxis
+              tickLine={false}
+              tick={{ fontSize: 14, fontWeight: "bold", fill: "#333" }}
+              axisLine={false}
             />
-            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-            <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+            <Tooltip content={<ChartTooltipContent indicator="dashed" />} />
+            <Bar dataKey="value" radius={5} barSize={55}>
+              {chartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  stroke="black"
+                  strokeWidth={0.5}
+                  fill={entry.color || "#888888"}
+                />
+              ))}
+            </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }
