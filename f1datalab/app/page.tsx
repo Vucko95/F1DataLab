@@ -6,7 +6,7 @@ import { TableDemo } from "@/components/structure/table"
 export default function Home() {
   return (
     <div >
-      <ModeToggle />
+      {/* <ModeToggle /> */}
       {/* <TableDemo /> */}
 
     </div>

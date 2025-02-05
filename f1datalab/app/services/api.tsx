@@ -71,7 +71,7 @@ const fetchData = async (url: string, method: string = 'GET', body: any = null) 
   };
   
   export const fetchDriversPointsForGraph = async (year: number) => {
-    return await fetchData(`http://localhost:8888/2drivers/graph/${year}`);
+    return await fetchData(`http://localhost:8888/drivers/graph/${year}`);
   };
   
   export const fetchConstructorsGraph = async () => {
