@@ -8,6 +8,7 @@ from models.models import *
 from settings.utils import *
 from fastapi import Depends
 from settings.db import get_database_session
+from fastapi.responses import JSONResponse
 
 router = APIRouter()
 
@@ -51,7 +52,7 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
     except Exception as e:
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
-# ! TODO
+
 @router.get("/standings/drivers/{year}/treemap",tags=["Driver Standings"],summary="Driver standings TreeMap API")
 async def driver_standings(year: int, db: Session = Depends(get_database_session)):
     try:
@@ -72,7 +73,7 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
             .order_by(func.sum(Result.points).desc())
             .all()
         )
-
+# ! TODO ADD OUTSIDE OF API
         driver_standings = []
         for result in driver_standings_query:
             driver_standings.append(
@@ -91,7 +92,87 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
             'Ferrari': '#D92A3E',
             'Mercedes': '#00D2BE',
             'McLaren': '#FF8700',
-            'Aston Martin': '#0090D1',
+            'Alpine': '#2173B8',
+            'Alfa Romeo': '#fff888',
+            'AlphaTauri': '#2E1F26',
+            'Williams': '#0092DA',
+            'Haas': '#B6BABD',
+            'Aston Martin': '#006F62',
+            'Renault': '#F1C800', 
+            'Racing Point': '#F1C9A1',
+            'Force India': '#009C75'
+        }
+
+        constructor_map = {
+            9: 'Red Bull Racing',
+            6: 'Ferrari',
+            131: 'Mercedes',
+            1: 'McLaren',
+            117: 'Aston Martin',
+            51: 'Alfa Romeo',
+            213: 'AlphaTauri',
+            3: 'Williams',
+            210: 'Haas',
+            214: 'Alpine',
+        }
+        for driver in driver_standings:
+            constructor_name = constructor_map.get(driver['constructorId'], 'Unknown')
+            driver['color'] = driver_colors.get(constructor_name, '#FFFFFF')
+        return driver_standings
+    
+
+    except Exception as e:
+        print(f"An error occurred while processing the request: {str(e)}")
+        return {"error": "An error occurred while processing the request"}
+
+
+@router.get("/standings/drivers/{year}/barchart",tags=["Driver Standings"],summary="Driver standings BarChart API")
+async def driver_standings(year: int, db: Session = Depends(get_database_session)):
+    try:
+        driver_standings_query = (
+            db.query(
+                Driver.driverId,
+                Driver.forename,
+                Driver.surname,
+                Driver.nationality,
+                func.sum(Result.points).label("total_points"),
+                func.min(Result.raceId).label("raceId"),
+                func.min(Result.constructorId).label("constructorId")
+            )
+            .join(Result, Result.driverId == Driver.driverId)
+            .join(Race, Result.raceId == Race.raceId)
+            .filter(Race.year == year)
+            .group_by(Driver.driverId, Driver.forename, Driver.surname)
+            .order_by(func.sum(Result.points).desc())
+            .limit(12) # TOP 12 ONLY
+            .all()
+        )
+        race_count_query = (
+            db.query(func.count(func.distinct(Race.raceId)).label("race_count"))
+            .filter(Race.year == year)
+            .scalar()
+        )
+        driver_standings = []
+        for result in driver_standings_query:
+            driver_standings.append(
+                {
+                    "driverId": result.driverId,
+                    "raceId": result.raceId,
+                    "constructorId": result.constructorId,
+                    "forename": result.forename,
+                    "nationality": result.nationality,
+                    "surname": result.surname,
+                    "total_points": result.total_points
+                }
+            )
+        driver_colors = {
+            'Red Bull Racing': '#1E41FF',
+            'Ferrari': '#D92A3E',
+            'Mercedes': '#00D2BE',
+            'McLaren': '#FF8700',
+            'Aston Martin': '#006F62',
+            'Alpine': '#2173B8',
+
             'Alfa Romeo': '#fff888',
             'AlphaTauri': '#2E1F26',
             'Williams': '#0092DA',
@@ -113,8 +194,11 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
         for driver in driver_standings:
             constructor_name = constructor_map.get(driver['constructorId'], 'Unknown')
             driver['color'] = driver_colors.get(constructor_name, '#FFFFFF')
+        
+        # race_count_query=22   
+        for driver in driver_standings:
+            driver['total_points'] = round(driver['total_points'] / race_count_query, 2)
         return driver_standings
-    
 
     except Exception as e:
         print(f"An error occurred while processing the request: {str(e)}")
@@ -194,8 +278,6 @@ async def driver_standings(year: int, race: int, db: Session = Depends(get_datab
     except Exception as e:
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
-
-
 
 
 
@@ -297,4 +379,69 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
     except Exception as e:
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
-    
+
+
+
+@router.get("/drivers/graph/{year}",tags=["Driver Standings"], summary="Get Drivers Line Chart")
+async def get_driver_points_by_race(year: int, db: Session = Depends(get_database_session)) -> dict:
+# GET ALL RACES 
+# SELECT raceId from races where year = 2023
+    races = (
+        db.query(Race.raceId)
+        .filter(Race.year == year)
+        .order_by(Race.date)
+        .all()
+    )
+
+#  GET ALL DRIVERS FOR CURRENT YEAR
+# select DISTINCT driverRef from drivers 
+# join results on results.driverId = drivers.driverId
+# join races on races.raceId = results.raceId where year = 2023
+
+
+    drivers = (
+        db.query(Driver.driverRef)
+        .join(Result, Result.driverId == Driver.driverId)
+        .join(Race, Race.raceId == Result.raceId)
+        .filter(Race.year == year)
+        .distinct()
+        .all()
+    )
+
+    # GET DRIVER POINTS FOR EACH RACE
+# SELECT races.raceId,
+#         drivers.driverRef,
+#         SUM(results.points) AS total_points
+# FROM results
+# JOIN races ON races.raceId = results.raceId
+# JOIN drivers ON drivers.driverId = results.driverId
+# WHERE races.year = 2023
+# GROUP BY races.raceId, drivers.driverId;
+    driver_points_query = (
+        db.query(
+            Race.raceId,
+            Driver.driverRef,
+            func.sum(Result.points).label('total_points')
+        )
+        .join(Result, Result.raceId == Race.raceId)
+        .join(Driver, Driver.driverId == Result.driverId)
+        .filter(Race.year == year)
+        .group_by(Race.raceId, Driver.driverId)
+    ).all()
+
+    response = []
+    cumulative_points = {driver.driverRef: 0 for driver in drivers}
+
+    for race in races:
+        race_data = {"race": race.raceId}
+
+        for driver in drivers:
+            race_data[driver.driverRef] = cumulative_points[driver.driverRef]
+
+        for driver_points in driver_points_query:
+            if driver_points.raceId == race.raceId:
+                cumulative_points[driver_points.driverRef] += driver_points.total_points
+                race_data[driver_points.driverRef] = cumulative_points[driver_points.driverRef]
+        response.append(race_data)
+
+    return JSONResponse(content=response)
