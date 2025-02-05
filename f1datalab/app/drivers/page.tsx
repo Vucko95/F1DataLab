@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-
 import { TopSection } from "@/components/drivers/TopSection";
 import { DriverCard } from "@/components/drivers/DriverCard";
 import { TableCard } from "@/components/drivers/TableCard";
@@ -22,20 +21,20 @@ export default function DriversPage() {
   };
 
   return (
-    
-    <div className="p-6">
+
+    <div className="p-4 pl-8">
       <ModeToggle />
-      <div className="pb-8 pl-2">
-      <DropDown onYearChange={handleYearChange} />
+      <div className="pb-4 pt-0">
+        <DropDown onYearChange={handleYearChange} />
       </div>
-      {/* <TopSection /> */}
+      {/* <TopSection /> PICK YEAR BUTTOn */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 justify-items-center">
 
-      <TableCard year={selectedYear}/>
-        <TreeCard year={selectedYear}  />
-        {/* <LineCard  /> */}
-        <BarCard  />
-        <PieCard  />
+        <TableCard year={selectedYear} />
+        <LineCard year={selectedYear} />
+        <BarCard year={selectedYear} />
+        <TreeCard year={selectedYear} />
+        {/* <PieCard  /> */}
 
       </div>
     </div>
