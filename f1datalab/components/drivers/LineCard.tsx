@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { fetchDriversPointsForGraph } from "@/app/services/api"
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
@@ -83,6 +83,10 @@ const driverColors: { [key: string]: string } = {
 
   return (
     <Card className="h-[44vh] w-[78vh] pr-8 pt-3 flex flex-col items-center justify-between">
+      <CardHeader
+        className="absolute">
+        <h1>Driver Points after each Race</h1>
+      </CardHeader>
       <CardContent className="h-[44vh] w-[78vh] pb-4">
         <ChartContainer config={{}}>
           <LineChart

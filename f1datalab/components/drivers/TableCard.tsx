@@ -7,7 +7,7 @@ interface TableCardProps {
 
 export function TableCard({ year }: TableCardProps) {
   return (
-    <Card className="h-[40vh] w-[80vh]">
+    <Card className="h-[44vh] w-[78vh]">
       <CardContent>
         <DriversTable year={year} />
       </CardContent>

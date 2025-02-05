@@ -77,7 +77,9 @@ export function DriversTable({ year }: DriversTableProps) {
 
   return (
     <Table>
-      <ScrollArea className="h-[40vh] rounded-md pb-4 ">
+      <ScrollArea className="h-[40vh] w-[73vh] "  type="always">
+      {/* TODO ! FIX DEFAULT SCROLLBAR TO BE CHANGED WITH SHADCN/UI THEME ONE */}
+        
         <TableHeader>
           <TableRow>
             <TableHead className="text-center">Driver ID</TableHead>

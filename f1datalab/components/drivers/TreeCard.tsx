@@ -5,6 +5,7 @@ import { fetchDriverStandingsYearTree } from "@/app/services/api";
 import {
   Card,
   CardContent,
+  CardHeader,
 } from "@/components/ui/card"
 
 interface TreeGraphProps {
@@ -75,8 +76,12 @@ export function TreeCard({ year }: TreeGraphProps) {
 
 
   return (
-    <Card className="h-[40vh] w-[78vh] flex flex-col items-center justify-between">
-      <CardContent className="p-5   ">
+    <Card className="h-[44vh] w-[78vh] flex flex-col items-center justify-between">
+      <CardHeader
+        className="absolute">
+        <h1>Driver Points for season</h1>
+      </CardHeader>
+      <CardContent className="pt-14   ">
         <Treemap
           width={700}
           height={350}
