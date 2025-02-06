@@ -45,6 +45,9 @@ const fetchData = async (url: string, method: string = 'GET', body: any = null) 
   export const fetchDriverStandingsYear = async (year: number) => {
     return await fetchData(`http://localhost:8888/standings/drivers/${year}/`);
   };
+  export const fetchConstructorStandingsYear = async (year: number) => {
+    return await fetchData(`http://localhost:8888/standings/constructors/${year}/`);
+  };
 
   export const fetchDriverStandingsYearTree = async (year: number) => {
     return await fetchData(`http://localhost:8888/standings/drivers/${year}/treemap`);
