@@ -7,20 +7,38 @@ from models.models import *
 from settings.utils import *
 from fastapi import Depends
 from settings.db import get_database_session
+from fastapi.responses import JSONResponse
 
 router = APIRouter()
+driver_colors = {
+    'Red Bull Racing': '#1E41FF',
+    'Ferrari': '#D92A3E',
+    'Mercedes': '#00D2BE',
+    'McLaren': '#FF8700',
+    'Aston Martin': '#006F62',
+    'Alpine': '#2173B8',
+    'Alfa Romeo': '#fff888',
+    'AlphaTauri': '#2E1F26',
+    'Williams': '#0092DA',
+    'Haas F1 Team': '#C6C6C6',
+    "Sauber": "#DE3126",
+    "RB F1 Team": "#223971",
+}
+
 constructor_map = {
-            9: 'Red Bull Racing',
-            6: 'Ferrari',
-            131: 'Mercedes',
-            1: 'McLaren',
-            117: 'Aston Martin',
-            51: 'Alfa Romeo',
-            213: 'AlphaTauri',
-            3: 'Williams',
-            210: 'Haas',
-            214: 'Alpine',
-        }
+    9: 'Red Bull Racing',
+    6: 'Ferrari',
+    131: 'Mercedes',
+    1: 'McLaren',
+    117: 'Aston Martin',
+    51: 'Alfa Romeo',
+    213: 'AlphaTauri',
+    3: 'Williams',
+    210: 'Haas F1 Team',
+    214: 'Alpine',
+    15: "Sauber",
+    215: "RB F1 Team",
+}
 @router.get("/standings/constructors/{year}",tags=["Constructorr Standings"],summary="Constructor standigns for specific year.")
 async def constructor_standings(year: int, db: Session = Depends(get_database_session)):
     try:
@@ -66,7 +84,7 @@ async def constructor_standings(year: int, db: Session = Depends(get_database_se
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
 
-@router.get("/standings/constructor/{year}/treemap",tags=["Constructorr Standings"],summary="Driver standings TreeMap API")
+@router.get("/standings/constructors/{year}/treemap",tags=["Constructorr Standings"],summary="Driver standings TreeMap API")
 async def driver_standings(year: int, db: Session = Depends(get_database_session)):
     try:
         constructor_map = {
@@ -78,8 +96,10 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
             51: 'Alfa Romeo',
             213: 'AlphaTauri',
             3: 'Williams',
-            210: 'Haas',
+            210: 'Haas F1 Team',
             214: 'Alpine',
+            15: "Sauber",
+            215: "RB F1 Team",
         }
         constructors_standaings_query = (
             db.query(
@@ -123,15 +143,29 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
             'Ferrari': '#D92A3E',
             'Mercedes': '#00D2BE',
             'McLaren': '#FF8700',
+            'Aston Martin': '#006F62',
             'Alpine': '#2173B8',
             'Alfa Romeo': '#fff888',
             'AlphaTauri': '#2E1F26',
             'Williams': '#0092DA',
-            'Haas': '#B6BABD',
-            'Aston Martin': '#006F62',
-            'Renault': '#F1C800', 
-            'Racing Point': '#F1C9A1',
-            'Force India': '#009C75'
+            'Haas F1 Team': '#C6C6C6',
+            "Sauber": "#DE3126",
+            "RB F1 Team": "#223971",
+        }
+
+        constructor_map = {
+            9: 'Red Bull Racing',
+            6: 'Ferrari',
+            131: 'Mercedes',
+            1: 'McLaren',
+            117: 'Aston Martin',
+            51: 'Alfa Romeo',
+            213: 'AlphaTauri',
+            3: 'Williams',
+            210: 'Haas F1 Team',
+            214: 'Alpine',
+            15: "Sauber",
+            215: "RB F1 Team",
         }
         for constructor in constructor_standings:
             constructor["color"] = driver_colors.get(constructor["constructor_name"], "#000000")
@@ -241,59 +275,150 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
 
-@router.get("/constructors/graph/{year}",tags=["Constructor Standings"],summary="Get Constructor Standings Graph Chart" )
-async def get_constructor_points_by_race(year: int, db: Session = Depends(get_database_session)):
+
+
+@router.get("/constructors/graph/{year}", tags=["Constructor Standings"], summary="Get Constructors Line Chart")
+async def get_constructor_points_by_race(year: int, db: Session = Depends(get_database_session)) -> dict:
+
+    races = db.query(Race.raceId).filter(Race.year == year).order_by(Race.date).all()
+
+    constructors = (
+        db.query(Constructor.constructorId)
+        .join(Result, Result.constructorId == Constructor.constructorId)
+        .join(Race, Race.raceId == Result.raceId)
+        .filter(Race.year == year)
+        .distinct()
+        .all()
+    )
+
+    constructor_points_query = (
+        db.query(
+            Race.raceId,
+            Result.constructorId,
+            func.sum(Result.points).label("total_points"),
+        )
+        .join(Result, Result.raceId == Race.raceId)
+        .filter(Race.year == year)
+        .group_by(Race.raceId, Result.constructorId)
+        .all()
+    )
+
+    response = []
+    cumulative_points = {constructor.constructorId: 0 for constructor in constructors}
+
+    for race in races:
+        race_data = {"race": race.raceId}
+
+        for constructor in constructors:
+            race_data[constructor.constructorId] = cumulative_points[constructor.constructorId]
+
+        for constructor_points in constructor_points_query:
+            if constructor_points.raceId == race.raceId:
+                cumulative_points[constructor_points.constructorId] += constructor_points.total_points
+                race_data[constructor_points.constructorId] = cumulative_points[constructor_points.constructorId]
+
+        response.append(race_data)
+
+    return JSONResponse(content=response)
+
+
+@router.get("/standings/constructors/{year}/barchart",tags=["Constructorr Standings"],summary="Driver standings BarChart API")
+async def driver_standings(year: int, db: Session = Depends(get_database_session)):
     try:
-        subquery_latest_race = (
-            db.query(Race.raceId)
-            .filter(Race.year == year, Race.date <= func.CURRENT_DATE())
-            .order_by(desc(Race.date))
-            .limit(1)
-            .subquery()
-        )
-        latest_race_id = 1110
-        # latest_race_id = db.query(subquery_latest_race.c.raceId).scalar()
-
-        all_past_races = (
-            db.query(Race.raceId)
-            .filter(Race.year == year, Race.date <= func.CURRENT_DATE())
-            .subquery()
-        )
-        all_past_races_query = db.query(all_past_races)
-        all_past_races_ids = [race_id for race_id, in all_past_races_query]
-
-        constructor_results = {}
-        for race_id in all_past_races_ids:
-            results = (
-                db.query(ConstructorStanding.constructorId, ConstructorStanding.points)
-                .filter(ConstructorStanding.raceId == race_id)
-                .all()
+        driver_standings_query = (
+            db.query(
+                Driver.driverId,
+                Driver.forename,
+                Driver.surname,
+                Driver.nationality,
+                func.sum(Result.points).label("total_points"),
+                func.min(Result.raceId).label("raceId"),
+                func.min(Result.constructorId).label("constructorId")
             )
-
-            for constructor_id, points in results:
-                constructor_ref = (
-                    db.query(Constructor.constructorRef)
-                    .filter(Constructor.constructorId == constructor_id)
-                    .scalar()
-                )
-
-                if constructor_id in constructor_results:
-                    constructor_results[constructor_id]["data"].append(points)
-                else:
-                    constructor_results[constructor_id] = {
-                        "label": constructor_ref,
-                        "data": [0, points],
-                    }
-
-        constructor_results = dict(list(constructor_results.items()))
-
-        chart_data = {
-            "labels": [str(i) for i in range(len(all_past_races_ids) + 1)],
-            "datasets": list(constructor_results.values())
+            .join(Result, Result.driverId == Driver.driverId)
+            .join(Race, Result.raceId == Race.raceId)
+            .filter(Race.year == year)
+            .group_by(Driver.driverId, Driver.forename, Driver.surname)
+            .order_by(func.sum(Result.points).desc())
+            .all()
+        )
+        race_count_query = (
+            db.query(func.count(func.distinct(Race.raceId)).label("race_count"))
+            .filter(Race.year == year)
+            .scalar()
+        )
+        driver_standings = []
+        for result in driver_standings_query:
+            driver_standings.append(
+                {
+                    "driverId": result.driverId,
+                    "raceId": result.raceId,
+                    "constructorId": result.constructorId,
+                    "forename": result.forename,
+                    "nationality": result.nationality,
+                    "surname": result.surname,
+                    "total_points": result.total_points
+                }
+            )
+        driver_colors = {
+            'Red Bull Racing': '#1E41FF',
+            'Ferrari': '#D92A3E',
+            'Mercedes': '#00D2BE',
+            'McLaren': '#FF8700',
+            'Aston Martin': '#006F62',
+            'Alpine': '#2173B8',
+            'Alfa Romeo': '#fff888',
+            'AlphaTauri': '#2E1F26',
+            'Williams': '#0092DA',
+            'Haas F1 Team': '#C6C6C6',
+            "Sauber": "#DE3126",
+            "RB F1 Team": "#223971",
         }
-        chart_data = append_colors_to_bar_graph_constructors(chart_data)
-        return chart_data
+
+        constructor_map = {
+            9: 'Red Bull Racing',
+            6: 'Ferrari',
+            131: 'Mercedes',
+            1: 'McLaren',
+            117: 'Aston Martin',
+            51: 'Alfa Romeo',
+            213: 'AlphaTauri',
+            3: 'Williams',
+            210: 'Haas F1 Team',
+            214: 'Alpine',
+            15: "Sauber",
+            215: "RB F1 Team",
+        }
+        for driver in driver_standings:
+            constructor_name = constructor_map.get(driver['constructorId'], 'Unknown')
+            driver['color'] = driver_colors.get(constructor_name, '#FFFFFF')
+        
+        # race_count_query=22   
+        for driver in driver_standings:
+            driver['total_points'] = round(driver['total_points'] / race_count_query, 2)
+        
+        constructor_standings = {}
+
+        for driver in driver_standings:
+            constructor_id = driver['constructorId']
+            if constructor_id not in constructor_standings:
+                constructor_standings[constructor_id] = {
+                    "constructor_name": constructor_map.get(constructor_id, "Unknown"),
+                    "total_points": 0,
+                    "color": driver['color']  
+                }
+            constructor_standings[constructor_id]['total_points'] += driver['total_points']
+
+        constructor_standings_list = list(constructor_standings.values())
+        constructor_standings_list = sorted(
+            constructor_standings.values(),
+            key=lambda x: x["total_points"],
+            reverse=True
+        )
+        return constructor_standings_list
+
+
 
     except Exception as e:
         print(f"An error occurred while processing the request: {str(e)}")
-        raise
+        return {"error": "An error occurred while processing the request"}
