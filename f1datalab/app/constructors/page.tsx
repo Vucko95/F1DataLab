@@ -1,7 +1,5 @@
 "use client";
 import { useState } from "react";
-import { TopSection } from "@/components/drivers/TopSection";
-import { DriverCard } from "@/components/drivers/DriverCard";
 import { TableCard } from "@/components/constructors/TableCard";
 import { BarCard } from "@/components/constructors/BarCard";
 import { TreeCard } from "@/components/constructors/TreeCard";

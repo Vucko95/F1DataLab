@@ -145,42 +145,17 @@ async def get_driver_laptimes(raceId: int, db: Session = Depends(get_database_se
 @router.get("/race/list/{year}",tags=["Race"],summary="List Races for specific year")
 async def get_driver_laptimes(year: int, db: Session = Depends(get_database_session)):
     try:
-        current_date = datetime.now().date()
-        latest_race = (
-            db.query(Race.date)
-            .filter(Race.year == year, Race.date <= current_date)
-            .order_by(Race.date.desc())
-            .first()
-        )
-
-        latest_race_date = latest_race[0]
-
-        # Query circuits that have a race date earlier than the latest race date
-        circuits = (
-            db.query(Circuit, Race.raceId, Race.date)
-            .join(Race, Circuit.circuitId == Race.circuitId)
-            # .filter(Race.year == year, Race.date <= latest_race_date)
+        races = (
+            db.query(Race)
             .filter(Race.year == year)
+            .order_by(Race.round.asc())
             .all()
         )
+        races_list = [
+            {"raceId" : race.raceId , "name" : race.name} for race in races
+        ]
 
-        circuits_list = []
-
-        for circuit, race_id, race_date in circuits:
-            circuits_list.append(
-                {
-                    'circuitId': circuit.circuitId,
-                    'circuitRef': circuit.circuitRef,
-                    'name': circuit.name,
-                    'location': circuit.location,
-                    'country': circuit.country,
-                    'url': circuit.url,
-                    'raceId': race_id,
-                    'date': race_date,
-                }
-            )
-
-        return circuits_list
+        return races_list
 
     except Exception as e:
         print(f"An error occurred while processing the request: {str(e)}")

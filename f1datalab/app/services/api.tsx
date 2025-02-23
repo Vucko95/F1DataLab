@@ -63,7 +63,7 @@ const fetchData = async (url: string, method: string = 'GET', body: any = null) 
     return await fetchData(`http://localhost:8888/standings/constructors/${year}/barchart`);
   };
 
-  export const fetchNumberOfRaces = async (year: number) => {
+  export const fetchRacesForSpecificYear = async (year: number) => {
     return await fetchData(`http://localhost:8888/race/list/${year}`);
   };
 
