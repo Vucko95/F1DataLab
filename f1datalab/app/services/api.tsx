@@ -66,6 +66,9 @@ const fetchData = async (url: string, method: string = 'GET', body: any = null) 
   export const fetchRacesForSpecificYear = async (year: number) => {
     return await fetchData(`http://localhost:8888/race/list/${year}`);
   };
+  export const fetchRaceDetails = async (raceId: number) => {
+    return await fetchData(`http://localhost:8888/race/details/${raceId}`);
+  };
 
   export const fetchConstructorStandings = async () => {
     return await fetchData('http://localhost:8888/standings/constructors/2023');

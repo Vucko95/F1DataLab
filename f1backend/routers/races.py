@@ -143,7 +143,7 @@ async def get_driver_laptimes(raceId: int, db: Session = Depends(get_database_se
         return {"error": "An error occurred while processing the request"}
 
 @router.get("/race/list/{year}",tags=["Race"],summary="List Races for specific year")
-async def get_driver_laptimes(year: int, db: Session = Depends(get_database_session)):
+async def get_list_of_races_for_specific_year(year: int, db: Session = Depends(get_database_session)):
     try:
         races = (
             db.query(Race)
@@ -156,6 +156,35 @@ async def get_driver_laptimes(year: int, db: Session = Depends(get_database_sess
         ]
 
         return races_list
+    except Exception as e:
+        print(f"An error occurred while processing the request: {str(e)}")
+        return {"error": "An error occurred while processing the request"}
+
+@router.get("/race/details/{raceId}",tags=["Race"],summary="Get Details abut specific race.")
+async def get_driver_laptimes(raceId: int, db: Session = Depends(get_database_session)):
+    try:
+        results = (
+            db.query(Result, Driver)
+            .join(Driver, Driver.driverId == Result.driverId)
+            .filter(Result.raceId == raceId)
+            .all()
+        )
+        # TODO ADD NATIONALITY AND CONSTRUCOTR
+        results = [
+            {
+              "raceId" : result.raceId ,
+              "driverId" : result.driverId,
+              "constructorId" : result.constructorId,
+              "position"  : result.position, 
+              "grid" : result.grid,
+              "time" : result.time,
+              "forename" : driver.forename,
+              "surname" : driver.surname,
+              "nationality" : driver.nationality,
+            }
+             for result, driver in results
+        ]
+        return results
 
     except Exception as e:
         print(f"An error occurred while processing the request: {str(e)}")

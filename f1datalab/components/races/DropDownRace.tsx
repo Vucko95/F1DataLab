@@ -1,9 +1,10 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { fetchRacesForSpecificYear } from "@/app/services/api";
+import { fetchRacesForSpecificYear, fetchRaceDetails } from "@/app/services/api";
 import { useEffect, useState } from "react";
 
-interface YearChangeProps {
+interface DropDownRaceProps {
   year: number;
+  onRaceChange: (raceId: number) => void;
 }
 
 interface Races {
@@ -11,9 +12,8 @@ interface Races {
   name: string;
 }
 
-export function DropDownRace({ year }: YearChangeProps) {
+export function DropDownRace({ year, onRaceChange }: DropDownRaceProps) {
   const [races, setRaces] = useState<Races[]>([]);
-  const [selectedRace, setSelectedRace] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,14 +29,17 @@ export function DropDownRace({ year }: YearChangeProps) {
   }, [year]);
 
   const handleValueChange = (value: string) => {
-    setSelectedRace(value);
-    console.log("Selected Race:", value);
+    const selectedRace = races.find(race => race.name === value);
+    if (selectedRace) {
+      onRaceChange(selectedRace.raceId);
+      console.log('value changed to ')
+    }
   };
 
   return (
-    <Select onValueChange={handleValueChange} value={selectedRace}>
+    <Select onValueChange={handleValueChange}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select Race" />
+        <SelectValue placeholder="Select a Race" />
       </SelectTrigger>
       <SelectContent>
         {races.length > 0 ? (
