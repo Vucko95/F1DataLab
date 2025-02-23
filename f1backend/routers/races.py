@@ -161,7 +161,7 @@ async def get_list_of_races_for_specific_year(year: int, db: Session = Depends(g
         return {"error": "An error occurred while processing the request"}
 
 @router.get("/race/details/{raceId}",tags=["Race"],summary="Get Details abut specific race.")
-async def get_driver_laptimes(raceId: int, db: Session = Depends(get_database_session)):
+async def get_race_details(raceId: int, db: Session = Depends(get_database_session)):
     try:
         results = (
             db.query(Result, Driver)
