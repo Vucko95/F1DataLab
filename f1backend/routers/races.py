@@ -77,6 +77,29 @@ def append_colors_to_labels(response_data):
 
     return response_data
 
+@router.get("/race/laptimes/{raceId}",tags=["Race"],summary="Average Laptimes per race" )
+async def get_driver_laptimes(raceId: int, db: Session = Depends(get_database_session)):
+    try:
+        lap_times_query = (
+            db.query(
+                Driver.driverRef,
+                func.avg(LapTime.milliseconds).label('avg_lap_time')
+            )
+            .join(Driver, LapTime.driverId == Driver.driverId)
+            .filter(LapTime.raceId == raceId)
+            .group_by(Driver.driverId)
+            .order_by('avg_lap_time')
+            .limit(10)
+            .all()
+        )
+
+        return lap_times_query
+
+    except Exception as e:
+        print(f"An error occurred while processing the request: {str(e)}")
+        return {"error": "An error occurred while processing the request"}
+
+
 @router.get("/race/average/{raceId}",tags=["Race"],summary="Race Average" )
 async def get_driver_laptimes(raceId: int, db: Session = Depends(get_database_session)):
     try:
