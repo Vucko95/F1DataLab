@@ -7,7 +7,7 @@ import { RaceTable } from "@/components/races/RaceTable";
 import { RaceCard } from "@/components/races/RaceTableCard";
 // import { BarCard } from "@/components/constructors/BarCard";
 // import { TreeCard } from "@/components/constructors/TreeCard";
-// import { LineCard } from "@/components/constructors/LineCard";
+import { LineCard } from "@/components/races/LineCard";
 import { ModeToggle } from "@/components/ui/ModeToggle"
 import { DropDown } from "@/components/races/DropDown"
 import { DropDownRace } from "@/components/races/DropDownRace"
@@ -40,7 +40,7 @@ export default function RacesPage() {
         {/* <RaceTable raceId={selectedRace} /> */}
         <RaceCard  raceId={selectedRace} />
 
-        {/* <LineCard year={selectedYear} /> */}
+        <LineCard year={selectedYear} />
         {/* <BarCard year={selectedYear} /> */}
        
         {/* <TreeCard year={selectedYear} />  */}
