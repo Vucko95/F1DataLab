@@ -131,3 +131,35 @@ def append_colors_to_bar_graph_constructors(response_data):
 
     response_data['datasets'] = datasets
     return response_data
+
+def get_constructor_colors():
+    return {
+        'Red Bull Racing': '#1E41FF',
+        'Ferrari': '#D92A3E',
+        'Mercedes': '#00D2BE',
+        'McLaren': '#FF8700',
+        'Aston Martin': '#006F62',
+        'Alpine': '#2173B8',
+        'Alfa Romeo': '#fff888',
+        'AlphaTauri': '#2E1F26',
+        'Williams': '#0092DA',
+        'Haas F1 Team': '#C6C6C6',
+        "Sauber": "#DE3126",
+        "RB F1 Team": "#223971",
+    }
+
+def get_constructor_mapping():
+    return {
+        9: 'Red Bull Racing',
+        6: 'Ferrari',
+        131: 'Mercedes',
+        1: 'McLaren',
+        117: 'Aston Martin',
+        51: 'Alfa Romeo',
+        213: 'AlphaTauri',
+        3: 'Williams',
+        210: 'Haas F1 Team',
+        214: 'Alpine',
+        15: "Sauber",
+        215: "RB F1 Team",
+    }
