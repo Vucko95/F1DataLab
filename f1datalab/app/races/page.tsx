@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import { RaceTable } from "@/components/races/RaceTable";
 import { RaceCard } from "@/components/races/RaceTableCard";
-// import { BarCard } from "@/components/constructors/BarCard";
+import { BarCard } from "@/components/races/BarCard";
 // import { TreeCard } from "@/components/constructors/TreeCard";
 import { LineCard } from "@/components/races/LineCard";
 import { ModeToggle } from "@/components/ui/ModeToggle"
@@ -39,9 +39,8 @@ export default function RacesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 justify-items-center">
         {/* <RaceTable raceId={selectedRace} /> */}
         <RaceCard  raceId={selectedRace} />
-
         <LineCard year={selectedYear} />
-        {/* <BarCard year={selectedYear} /> */}
+        <BarCard year={selectedYear} raceId={selectedRace} />
        
         {/* <TreeCard year={selectedYear} />  */}
         {/* <PieCard  /> */}

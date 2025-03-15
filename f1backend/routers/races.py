@@ -3,7 +3,7 @@ import asyncio
 from datetime import date, datetime
 from heapq import nlargest
 from typing import Dict, List
-
+from settings.utils import *
 import requests
 from fastapi import APIRouter, Depends
 from models.models import *
@@ -94,6 +94,9 @@ async def get_driver_laptimes(raceId: int, db: Session = Depends(get_database_se
         )
 
         return lap_times_query
+#  TODO ADD +- 3 and then make some kind of a bar chart with their average speed
+#  TODO TEST THE GRAPH AS WELL    
+
 
     except Exception as e:
         print(f"An error occurred while processing the request: {str(e)}")
@@ -212,7 +215,148 @@ async def get_race_details(raceId: int, db: Session = Depends(get_database_sessi
     except Exception as e:
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
+    
 
+@router.get("/race/details/barchart/constructor/{raceId}", tags=["Race"], summary="Get Details about a specific race.")
+async def get_race_details(raceId: int, db: Session = Depends(get_database_session)):
+    try:
+        results = (
+            db.query(Result)
+            .filter(Result.raceId == raceId)
+            .all()
+        )
+
+        constructor_map = get_constructor_mapping()
+        driver_colors = get_constructor_colors()
+
+        constructor_standings = {}
+
+        for result in results:
+            constructor_id = result.constructorId
+            constructor_name = constructor_map.get(constructor_id, "Unknown")
+            color = driver_colors.get(constructor_name, "#FFFFFF")
+
+            if constructor_id not in constructor_standings:
+                constructor_standings[constructor_id] = {
+                    "constructorId": constructor_id,
+                    "constructor_name": constructor_name,
+                    "points": 0,
+                    "color": color
+                }
+
+            constructor_standings[constructor_id]["points"] += result.points
+
+        sorted_standings = sorted(constructor_standings.values(), key=lambda x: x["points"], reverse=True)
+
+        return sorted_standings
+
+
+    except Exception as e:
+        print(f"An error occurred while processing the request: {str(e)}")
+        return {"error": "An error occurred while processing the request"}
+
+
+
+@router.get("/standings/constructors/{year}/barchart",tags=["Constructorr Standings"],summary="Driver standings BarChart API")
+async def driver_standings(year: int, db: Session = Depends(get_database_session)):
+    try:
+        driver_standings_query = (
+            db.query(
+                Driver.driverId,
+                Driver.forename,
+                Driver.surname,
+                Driver.nationality,
+                func.sum(Result.points).label("total_points"),
+                func.min(Result.raceId).label("raceId"),
+                func.min(Result.constructorId).label("constructorId")
+            )
+            .join(Result, Result.driverId == Driver.driverId)
+            .join(Race, Result.raceId == Race.raceId)
+            .filter(Race.year == year)
+            .group_by(Driver.driverId, Driver.forename, Driver.surname)
+            .order_by(func.sum(Result.points).desc())
+            .all()
+        )
+        race_count_query = (
+            db.query(func.count(func.distinct(Race.raceId)).label("race_count"))
+            .filter(Race.year == year)
+            .scalar()
+        )
+        driver_standings = []
+        for result in driver_standings_query:
+            driver_standings.append(
+                {
+                    "driverId": result.driverId,
+                    "raceId": result.raceId,
+                    "constructorId": result.constructorId,
+                    "forename": result.forename,
+                    "nationality": result.nationality,
+                    "surname": result.surname,
+                    "total_points": result.total_points
+                }
+            )
+        driver_colors = {
+            'Red Bull Racing': '#1E41FF',
+            'Ferrari': '#D92A3E',
+            'Mercedes': '#00D2BE',
+            'McLaren': '#FF8700',
+            'Aston Martin': '#006F62',
+            'Alpine': '#2173B8',
+            'Alfa Romeo': '#fff888',
+            'AlphaTauri': '#2E1F26',
+            'Williams': '#0092DA',
+            'Haas F1 Team': '#C6C6C6',
+            "Sauber": "#DE3126",
+            "RB F1 Team": "#223971",
+        }
+
+        constructor_map = {
+            9: 'Red Bull Racing',
+            6: 'Ferrari',
+            131: 'Mercedes',
+            1: 'McLaren',
+            117: 'Aston Martin',
+            51: 'Alfa Romeo',
+            213: 'AlphaTauri',
+            3: 'Williams',
+            210: 'Haas F1 Team',
+            214: 'Alpine',
+            15: "Sauber",
+            215: "RB F1 Team",
+        }
+        for driver in driver_standings:
+            constructor_name = constructor_map.get(driver['constructorId'], 'Unknown')
+            driver['color'] = driver_colors.get(constructor_name, '#FFFFFF')
+        
+        for driver in driver_standings:
+            driver['total_points'] = round(driver['total_points'] / race_count_query, 2)
+        
+        constructor_standings = {}
+
+        for driver in driver_standings:
+            constructor_id = driver['constructorId']
+            if constructor_id not in constructor_standings:
+                constructor_standings[constructor_id] = {
+                    "constructor_name": constructor_map.get(constructor_id, "Unknown"),
+                    "total_points": 0,
+                    "color": driver['color']  
+                }
+            constructor_standings[constructor_id]['total_points'] += driver['total_points']
+
+        constructor_standings_list = list(constructor_standings.values())
+        constructor_standings_list = sorted(
+            constructor_standings.values(),
+            key=lambda x: x["total_points"],
+            reverse=True
+        )
+        return constructor_standings_list
+
+
+
+    except Exception as e:
+        print(f"An error occurred while processing the request: {str(e)}")
+        return {"error": "An error occurred while processing the request"}
+    
 @router.get("/race/results/{race_id}",tags=["Race"],summary="Get specific result for race with RaceID")
 def get_race_results(race_id: int, db: Session = Depends(get_database_session)):
     try:
