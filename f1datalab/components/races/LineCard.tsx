@@ -140,8 +140,9 @@ export function LineCard({ year }: LineCardPros) {
               }}
               axisLine={false}
               interval={0}
-            />
+              />
             <YAxis
+              reversed
               yAxisId="right"
               orientation="right"
               tick={{ fontSize: 18, fontWeight: "bold", fill: "#333" }}
