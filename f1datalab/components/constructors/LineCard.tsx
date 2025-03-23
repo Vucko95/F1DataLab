@@ -4,11 +4,7 @@ import { useEffect, useState } from "react"
 import { fetchConstructorPointsForGraph } from "@/app/services/api"
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/components/ui/chart";
 
 interface LineCardPros {
   year: number;
@@ -52,6 +48,7 @@ export function LineCard({ year }: LineCardPros) {
 
 
 // TODO ! ADD MAPPING TO BE CONSTRUCTOR NAME INSTEAD OF ID !
+// TODO ! ADD RACE track ID'S LIKE 'AUT' 'GER' and simillar
 const constructorColors: { [key: string]: string } = {
   9: "#3671C6",
   131: "#00D2BE",
@@ -77,24 +74,20 @@ const constructorNames: { [key: number]: string } = {
   51: "Alfa Romeo",
 };
   return (
-    <Card className="h-[44vh] w-[78vh] pr-8 pt-3 flex flex-col items-center justify-between">
-      <CardHeader
-        className="absolute">
-        <h1>Constructor Points after each Race</h1>
-      </CardHeader>
-      <CardContent className="h-[44vh] w-[78vh] pb-4">
+    <Card>
+      <CardContent className=" ">
         <ChartContainer config={{}}>
-          <LineChart accessibilityLayer data={chartData} margin={{left: 1,right: 1,}}>
+          <LineChart   data={chartData} margin={{ top: 18, right: -10, left: -30, bottom: -10 }}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="race"
               tickLine={false}
               axisLine={false}
-              tickMargin={2}
+              // tickMargin={2}
               tick={{ fontSize: 14, fontWeight: "bold", fill: "#888" }}
             />
             <YAxis
-              domain={[0, 350]}
+              // domain={[0, 350]}
               tickLine={false}
               tick={{ fontSize: 14, fontWeight: "bold", fill: "#333" }}
               axisLine={false}
