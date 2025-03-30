@@ -316,9 +316,9 @@ async def get_constructor_points_by_race(year: int, db: Session = Depends(get_da
             if constructor_points.raceId == race.raceId:
                 cumulative_points[constructor_points.constructorId] += constructor_points.total_points
                 race_data[constructor_points.constructorId] = cumulative_points[constructor_points.constructorId]
-
         response.append(race_data)
-
+# TODO LOGIC TO ADD DYNAMIC RACE NAME TO GRAPH
+    # response[0]['race'] = 'BAH'
     return JSONResponse(content=response)
 
 
