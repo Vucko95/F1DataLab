@@ -43,12 +43,10 @@ export function ConstructorsTable({ year }: TableCardProps) {
 
   return (
 <Card className="p-1 h-full flex flex-col">
-<CardHeader className="p-2 flex justify-center items-center text-lg">Constructor Standigns 2024</CardHeader>
-        <Table>
+<CardHeader className="p-2 pb-4 flex justify-center items-center text-lg">Constructor Standigns </CardHeader>
+        <Table >
         <TableHeader className="sticky top-0 bg-background z-10">
         <TableRow>
-              <TableHead className="text-center">Constructor ID</TableHead>
-              <TableHead className="text-center"></TableHead>
               <TableHead className="text-center">Constructor</TableHead>
               <TableHead className="text-center">Total Points</TableHead>
             </TableRow>
@@ -56,11 +54,10 @@ export function ConstructorsTable({ year }: TableCardProps) {
           <TableBody>
             {constructors.map((constructor) => (
               <TableRow key={constructor.constructorId} className="text-center">
-                <TableCell>{constructor.constructorId}</TableCell>
-                <TableCell className="flex justify-center">
+                <TableCell className="flex justify-center gap-x-2" >
                   <Image src={`/images/constructors/${constructor.constructorId}.webp`} alt="Constructor Logo" width={25} height={25} className="rounded-sm" />
+                  {constructor.constructor_name}
                 </TableCell>
-                <TableCell>{constructor.constructor_name}</TableCell>
                 <TableCell>{constructor.total_points}</TableCell>
               </TableRow>
             ))}
