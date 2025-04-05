@@ -9,6 +9,10 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+		screens: {
+			'2k': { raw: '(min-width: 2560px) and (max-width: 3839px)' },
+			'4k': { raw: '(min-width: 3840px)' },
+		  },
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

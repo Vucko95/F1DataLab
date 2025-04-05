@@ -1,5 +1,5 @@
 "use client"
-import { Treemap } from 'recharts';
+import { Treemap , ResponsiveContainer } from 'recharts';
 import { useEffect, useState } from "react";
 import { fetchConstructorStandingsYearTree } from "@/app/services/api";
 import {
@@ -22,11 +22,7 @@ interface ConstructorStandingTree {
 
 export function TreeCard({ year }: TreeGraphProps) {
   const [constructors, setConstructors] = useState<ConstructorStandingTree[]>([]);
-  const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,14 +33,8 @@ export function TreeCard({ year }: TreeGraphProps) {
         console.error("Error fetching driver standings:", error);
       }
     };
-    if (isMounted) {
-      fetchData();
-    }
-  }, [year, isMounted]);
-
-  if (!isMounted) {
-    return null;
-  }
+    fetchData();
+  }, [year]);
 
   const transformedData = constructors.map(constructor => ({
     name: constructor.constructor_name,
@@ -54,20 +44,15 @@ export function TreeCard({ year }: TreeGraphProps) {
 
 
   return (
-    <Card className="h-[44vh] w-[78vh] flex flex-col items-center justify-between">
-      <CardHeader
-        className="absolute">
-        <h1>constructor Points for season</h1>
+    <Card className="h-[44vh] w-full max-w-[78vh] flex flex-col items-center justify-between">
+      <CardHeader className="absolute">
+        <h1 className="text-lg">Constructor Points Full Season TreeMap</h1>
       </CardHeader>
-      <CardContent className="pt-14   ">
-        <Treemap
-          width={700}
-          height={350}
-          data={transformedData}
-          dataKey="size"
-          stroke="#000000"
-          fill="#000000"
-        />
+
+      <CardContent className="pt-14 w-full h-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <Treemap data={transformedData} dataKey="size" stroke="#000000" fill="#000000"/>
+        </ResponsiveContainer>
       </CardContent>
     </Card>
   )

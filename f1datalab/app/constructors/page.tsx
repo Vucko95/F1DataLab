@@ -14,7 +14,7 @@ export default function ConstructorsPage() {
   const handleYearChange = (year: number) => {
     setSelectedYear(year);
   };
-
+// TODO ! FIX CONSTRUCTOR GRAPH TITLES
   return (
     <div className="p-4 pl-8">
       <ModeCoffe />
@@ -26,11 +26,11 @@ export default function ConstructorsPage() {
 
       <div className="grid grid-cols-10 gap-4 justify-items-center">
 
-        <div className="col-span-4 w-full">
+        <div className="col-span-3 w-full">
           <ConstructorsTable year={selectedYear} />
         </div>
 
-        <div className="col-span-6 w-full">
+        <div className="col-span-7 w-full">
           <LineCard year={selectedYear} />
         </div>
 

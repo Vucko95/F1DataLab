@@ -19,11 +19,6 @@ interface ConstructorStandingTree {
 
 export function BarCard({ year }: BarGraphProps) {
   const [constructors, setConstructors] = useState<ConstructorStandingTree[]>([]);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,29 +26,22 @@ export function BarCard({ year }: BarGraphProps) {
         const data: ConstructorStandingTree[] = await fetchConstructorStandingsYearBar(year);
         setConstructors(data);
       } catch (error) {
-        console.error("Error fetching constructor standings:", error);
+        console.error("Error fetching driver standings:", error);
       }
     };
-
-    if (isMounted) {
-      fetchData();
-    }
-  }, [year, isMounted]);
-
-  if (!isMounted) {
-    return null;
-  }
-
+    fetchData();
+  }, [year]);
+  
   const chartData = constructors.map((constructor) => ({
     name: constructor.constructor_name,
     value: constructor.total_points,
     color: constructor.color,
   }));
+  
   return (
     <Card className="h-[44vh] w-[78vh] pr-8 flex flex-col items-center justify-between">
-      <CardHeader
-        className="absolute">
-        <h1>Average Constructor Points per Race</h1>
+      <CardHeader className="absolute">
+        <h1 className="text-lg">Average Constructor Points per Race</h1>
       </CardHeader>
       <CardContent className="w-[80vh] pt-2">
         <ChartContainer config={{}}>
