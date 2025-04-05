@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+.responsive-text {
+  @apply text-base 2k:text-xl 4k:text-3xl;
+}
+
+.responsive-header {
+  @apply text-xl 2k:text-3xl 4k:text-4xl font-semibold;
+}
+
+.responsive-logo {
+  @apply w-[35px] h-[35px] 2k:w-[40px] 2k:h-[40px] 4k:w-[48px] 4k:h-[48px];
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
