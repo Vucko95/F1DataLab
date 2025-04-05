@@ -280,16 +280,19 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
 @router.get("/constructors/graph/{year}", tags=["Constructor Standings"], summary="Get Constructors Line Chart")
 async def get_constructor_points_by_race(year: int, db: Session = Depends(get_database_session)) -> dict:
 
-    races = db.query(Race.raceId).filter(Race.year == year).order_by(Race.date).all()
+    races = db.query(Race.raceId, Race.name).filter(Race.year == year).order_by(Race.date).all()
 
     constructors = (
-        db.query(Constructor.constructorId)
+        db.query(Constructor.constructorId, Constructor.constructorRef)
         .join(Result, Result.constructorId == Constructor.constructorId)
         .join(Race, Race.raceId == Result.raceId)
         .filter(Race.year == year)
         .distinct()
         .all()
     )
+
+    # Create a mapping: constructorId → constructorRef
+    constructor_map = {constructor.constructorId: constructor.constructorRef for constructor in constructors}
 
     constructor_points_query = (
         db.query(
@@ -304,21 +307,29 @@ async def get_constructor_points_by_race(year: int, db: Session = Depends(get_da
     )
 
     response = []
-    cumulative_points = {constructor.constructorId: 0 for constructor in constructors}
+    cumulative_points = {constructor_map[c.constructorId]: 0 for c in constructors}
+
+    # First race (baseline): all values at 0
+    start_data = {"race": 0, "race_name": ""}
+    for ref in cumulative_points:
+        start_data[ref] = 0.0
+    response.append(start_data)
 
     for race in races:
-        race_data = {"race": race.raceId}
+        race_data = {"race": race.raceId, "race_name": race.name[:3].upper()}
 
-        for constructor in constructors:
-            race_data[constructor.constructorId] = cumulative_points[constructor.constructorId]
+        # Initialize each constructor with previous value
+        for ref in cumulative_points:
+            race_data[ref] = cumulative_points[ref]
 
         for constructor_points in constructor_points_query:
             if constructor_points.raceId == race.raceId:
-                cumulative_points[constructor_points.constructorId] += constructor_points.total_points
-                race_data[constructor_points.constructorId] = cumulative_points[constructor_points.constructorId]
+                ref = constructor_map[constructor_points.constructorId]
+                cumulative_points[ref] += constructor_points.total_points
+                race_data[ref] = cumulative_points[ref]
+
         response.append(race_data)
-# TODO LOGIC TO ADD DYNAMIC RACE NAME TO GRAPH
-    # response[0]['race'] = 'BAH'
+
     return JSONResponse(content=response)
 
 
