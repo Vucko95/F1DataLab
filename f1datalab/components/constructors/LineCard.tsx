@@ -13,65 +13,44 @@ interface LineCardPros {
 export function LineCard({ year }: LineCardPros) {
 
   const [chartData, setChartData] = useState<any[]>([]);
-  const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        
         const data = await fetchConstructorPointsForGraph(year);
         setChartData(data);
       } catch (error) {
         console.error("Error fetching driver standings:", error);
       }
     };
-
-    if (isMounted) {
-      fetchData(); // Fetch data only after component mounts
-    }
-  }, [year, isMounted]);
-
-  if (!isMounted) {
-    return null; // Prevents hydration errors
-  }
+    fetchData();
+  }, [year]);
 
 
-
-
-  // const color1 = getComputedStyle(document.documentElement).getPropertyValue('--chart-custom-color1').trim();
-  // const color2 = getComputedStyle(document.documentElement).getPropertyValue('--chart-custom-color2').trim();
-  // const color3 = getComputedStyle(document.documentElement).getPropertyValue('--chart-custom-color3').trim();
-
-
-// TODO ! ADD MAPPING TO BE CONSTRUCTOR NAME INSTEAD OF ID !
-// TODO ! ADD RACE track ID'S LIKE 'AUT' 'GER' and simillar
 const constructorColors: { [key: string]: string } = {
-  9: "#3671C6",
-  131: "#00D2BE",
-  6: "#DC0000",
-  1: "#FF8700",
-  117: "#0090FF",
-  214: "#005AFF",
-  213: "#2B4562",
-  3: "#0092DA",
-  210: "#B6BABD",
-  51: "#fff888",
+  red_bull: "#3671C6",
+  mercedes: "#00D2BE",
+  ferrari: "#DC0000",
+  mclaren: "#FF8700",
+  aston_martin: "#0090FF",
+  alpine: "#005AFF",
+  rb: "#2B4562",
+  williams: "#0092DA",
+  haas: "#B6BABD",
+  sauber: "#fff888",
 };
-const constructorNames: { [key: number]: string } = {
-  9: "Red Bull Racing",
-  131: "Mercedes",
-  6: "Ferrari",
-  1: "McLaren",
-  117: "Aston Martin",
-  214: "Alpine",
-  213: "AlphaTauri",
-  3: "Williams",
-  210: "Haas",
-  51: "Alfa Romeo",
+// TODO Add Full names instead of DB Generated ones
+const constructorNames: { [key: string]: string } = {
+  red_bull: "Red Bull Racing",
+  mercedes: "Mercedes",
+  ferrari: "Ferrari",
+  mclaren: "McLaren",
+  aston_martin: "Aston Martin",
+  alpine: "Alpine",
+  rb: "RB",
+  williams: "Williams",
+  haas: "Haas",
+  sauber: "Sauber",
 };
   return (
     <Card>
@@ -79,28 +58,17 @@ const constructorNames: { [key: number]: string } = {
         <ChartContainer config={{}}>
           <LineChart   data={chartData} margin={{ top: 18, right: -10, left: -30, bottom: -10 }}>
             <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="race"
-              tickLine={false}
-              axisLine={false}
-              // tickMargin={2}
-              tick={{ fontSize: 14, fontWeight: "bold", fill: "#888" }}
-            />
-            <YAxis
-              // domain={[0, 350]}
-              tickLine={false}
-              tick={{ fontSize: 14, fontWeight: "bold", fill: "#333" }}
-              axisLine={false}
-            />
+            <XAxis dataKey="race_name" tickLine={false}axisLine={false}/>
+            <YAxis tickLine={false} axisLine={false} />
 
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             {Object.keys(constructorColors).map((constructorKey) => (
               <Line
                 key={constructorKey}
                 dataKey={constructorKey}
-                type="monotone"
+                // type="monotone" # THIS Smooths the corners of line graph
                 stroke={constructorColors[constructorKey]}
-                strokeWidth={3}
+                strokeWidth={4}
                 dot={false}
               />
             ))}
