@@ -19,14 +19,14 @@ export function AppSidebar() {
         <SidebarGroup>
           <Image
             className="block dark:hidden"
-            src="/images/logo/l.svg"
+            src="/images/logo/light.svg"
             alt="light-mode-image"
             width={180}
             height={180}
           />
           <Image
             className="hidden dark:block"
-            src="/images/logo/d.svg"
+            src="/images/logo/dark.svg"
             alt="dark-mode-image"
             width={180}
             height={180}

@@ -72,6 +72,9 @@ const fetchData = async (url: string, method: string = 'GET', body: any = null) 
   export const fetchRaceDetails = async (raceId: number) => {
     return await fetchData(`http://localhost:8888/race/details/${raceId}`);
   };
+  export const fetchRaceStartFinishDiff = async (raceId: number) => {
+    return await fetchData(`http://localhost:8888/race/details/${raceId}/pschart`);
+  };
 
   export const fetchConstructorStandings = async () => {
     return await fetchData('http://localhost:8888/standings/constructors/2023');
@@ -94,6 +97,9 @@ const fetchData = async (url: string, method: string = 'GET', body: any = null) 
   
   export const fetchConstructorsGraph = async () => {
     return await fetchData('http://localhost:8888/constructors/graph/2024');
+  };
+  export const fetchRacePaceData = async (raceId: number) => {
+    return await fetchData(`http://localhost:8888/race/laptimes/${raceId}`);
   };
   
 
