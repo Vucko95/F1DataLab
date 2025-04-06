@@ -4,13 +4,17 @@ import { useState } from "react";
 // import { DriverCard } from "@/components/races/RaceTable";
 
 import { RaceTable } from "@/components/races/RaceTable";
-import { RaceCard } from "@/components/races/RaceTableCard";
+import { BarGridPositionCard } from "@/components/races/BarGridPositionCard";
+// import { RaceCard } from "@/components/races/RaceTableCard";
 import { BarCard } from "@/components/races/BarCard";
 // import { TreeCard } from "@/components/constructors/TreeCard";
 import { LineCard } from "@/components/races/LineCard";
+import { RacePaceCard } from "@/components/races/RacePaceCard";
+import { RacePaceCardHC } from "@/components/races/RacePaceCardHC";
 import { ModeToggle } from "@/components/ui/ModeToggle"
 import { DropDown } from "@/components/races/DropDown"
 import { DropDownRace } from "@/components/races/DropDownRace"
+// import { Card, CardContent } from "@/components/ui/card";
 
 
 
@@ -35,17 +39,34 @@ export default function RacesPage() {
       <div className="pb-4 pt-0 flex gap-x-4">
         <DropDown onYearChange={handleYearChange} />
         <DropDownRace year={selectedYear} onRaceChange={handleRaceChange} />
-        </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 justify-items-center">
-        {/* <RaceTable raceId={selectedRace} /> */}
-        <RaceCard  raceId={selectedRace} />
-        <LineCard year={selectedYear} />
-        <BarCard year={selectedYear} raceId={selectedRace} />
-       
-        {/* <TreeCard year={selectedYear} />  */}
-        {/* <PieCard  /> */}
-
       </div>
-    </div>
+      <div className="grid grid-cols-10 gap-4 justify-items-center">
+
+        <div className="col-span-4 w-full">
+          {/* TODO MAYBE ADD QUALY POSITION AND RACE GAINS */}
+        <RaceTable raceId={selectedRace} />
+        </div>
+        <div className="col-span-6 w-full">
+        <BarGridPositionCard  raceId={selectedRace} />
+        </div>
+        <div className="col-span-5 w-full">
+        <LineCard year={selectedYear} />
+        </div>
+        <div className="col-span-5 w-full">
+        <BarCard year={selectedYear} raceId={selectedRace} />
+        </div>
+
+        </div>
+      </div>
+
+
   );
 }
+
+      {/* <RaceCard  raceId={selectedRace} /> */}
+      {/* <RaceTable raceId={selectedRace} /> */}
+      {/* <RacePaceCard  raceId={selectedRace} /> */}
+      {/* <RacePaceCardHC /> */}
+
+      {/* <TreeCard year={selectedYear} />  */}
+      {/* <PieCard  /> */}
