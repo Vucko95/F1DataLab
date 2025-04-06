@@ -54,7 +54,7 @@ const constructorNames: { [key: string]: string } = {
 };
   return (
     <Card>
-      <CardContent className=" ">
+      <CardContent>
         <ChartContainer config={{}}>
           <LineChart   data={chartData} margin={{ top: 18, right: -10, left: -30, bottom: -10 }}>
             <CartesianGrid vertical={false} />

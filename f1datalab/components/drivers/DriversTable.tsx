@@ -1,20 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-
-import Image from "next/image";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { nationalityToFlag } from "@/lib/utils";
+import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
 import { fetchDriverStandingsYear } from "@/app/services/api";
+import Image from "next/image";
 
 interface DriversTableProps {
   year: number;
@@ -30,34 +22,12 @@ interface DriverStanding {
   total_points: number;
 }
 
-const nationalityToFlag: { [key: string]: string } = {
-  British: "gb",
-  Dutch: "nl",
-  German: "de",
-  Monegasque: "mc",
-  Finnish: "fi",
-  Australian: "au",
-  Mexican: "mx",
-  UnitedStates: "us",
-  French: "fr",
-  Spanish: "es",
-  Canadian: "ca",
-  Polish: "pl",
-  Japanese: "jp",
-  Thai: "th",
-  Danish: "dk",
-  Chinese: "cn",
-  "New Zealander": "nz",
-};
-
 export function DriversTable({ year }: DriversTableProps) {
+
   const [drivers, setDrivers] = useState<DriverStanding[]>([]);
-  const [isMounted, setIsMounted] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const itemsPerPage = 10;
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,15 +38,8 @@ export function DriversTable({ year }: DriversTableProps) {
         console.error("Error fetching driver standings:", error);
       }
     };
-    // ADDING Mount due the hydration erros , which happens due the missmatch on server and client sidde.
-    if (isMounted) {
-      fetchData(); // fetch  data only after the component has mounted.
-    }
-  }, [year, isMounted]); // re-fetch data whenever year changes
-
-  if (!isMounted) {
-    return null; // render nothing on the server
-  }
+    fetchData();
+  }, [year]);
 
   const totalPages = Math.ceil(drivers.length / itemsPerPage);
   const paginatedDrivers = drivers.slice(
@@ -85,79 +48,55 @@ export function DriversTable({ year }: DriversTableProps) {
   );
 
   return (
-    <div>
-      <Table>
+  <Card className="p-4 h-full flex flex-col">
+      <Table className="text-sm 2xl:text-base 4k:text-lg">
         <TableHeader>
           <TableRow>
-            <TableHead className="text-center">Driver ID</TableHead>
-            <TableHead className="text-center">Nationality</TableHead>
-            <TableHead className="text-center">Forename</TableHead>
-            <TableHead className="text-center">Surname</TableHead>
-            <TableHead className="text-center">Constructor</TableHead>
-            <TableHead className="text-center">Total Points</TableHead>
+            {/* TODO ! INSTEAD DRIVER ID ADD DRIVER CURRENT PLACMENT IN STANDINGS 1,2,3...4.5 ""*/}
+            {/* TODO ! "MAYBE" DRIVERS LOGO INSTEAD ID */}
+            {/* <TableHead className="text-center text-sm 2xl:text-base 4k:text-lg">Driver ID</TableHead> */}
+            <TableHead className="text-center text-sm 2xl:text-base 4k:text-lg">Nat</TableHead>
+            <TableHead className="text-center text-sm 2xl:text-base 4k:text-lg">Driver</TableHead>
+            <TableHead className="text-center text-sm 2xl:text-base 4k:text-lg">C</TableHead>
+            <TableHead className="text-center text-sm 2xl:text-base 4k:text-lg">Points</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {paginatedDrivers.map((driver) => {
             const nationalityFlag = nationalityToFlag[driver.nationality] || "us";
             return (
-              <TableRow key={driver.driverId} className="text-center">
-                <TableCell>{driver.driverId}</TableCell>
-                <TableCell className="align-center pl-12 ">
-                  <Image
-                    src={`https://flagcdn.com/${nationalityFlag}.svg`}
-                    alt={`${driver.nationality} Flag`}
-                    width={20}
-                    height={20}
-                    className="rounded-sm"
-                  />
-                </TableCell>
-                <TableCell>{driver.forename}</TableCell>
-                <TableCell>{driver.surname}</TableCell>
-                <TableCell className="flex justify-center">
-                  <Image src={`/images/constructors/${driver.constructorId}.webp`} alt="Constructor Logo" width={25} height={25} className="rounded-sm"/>
-                </TableCell>
-              {/* TODO ! "MAYBE" DRIVERS LOGO INSTEAD ID */}
-              {/* <Image
-                src={`/images/drivers/${driver.driverId}.webp`}
-                alt="Driver Logo"
-                width={30}
-                height={30}
-                className="rounded-xl"
-              /> */}
-              {/* TODO ! ISSUE WITH IMAGE BEING A BIT PUSHED DOWN WHEN USING FLEX JUSTIFY-CENTER */}
-              {/* <TableCell className="flex justify-center "> */}
-
-              {/* TODO ! INSTEAD DRIVER ID ADD DRIVER CURRENT PLACMENT IN STANDINGS 1,2,3...4.5 ""*/}
-
+              <TableRow key={driver.driverId} className="text-center text-sm 2xl:text-base 4k:text-lg">
+                  <TableCell >
+                  <Image src={`https://flagcdn.com/${nationalityFlag}.svg`} alt={`${driver.nationality} Flag`} width={18} height={18} />
+                  </TableCell>
+                <TableCell>{driver.forename} {driver.surname}</TableCell>
+                  <TableCell >
+                  <Image src={`/images/constructors/${driver.constructorId}.webp`} alt="Constructor Logo" width={25} height={25} />
+                    </TableCell>
                 <TableCell>{driver.total_points}</TableCell>
               </TableRow>
             );
           })}
         </TableBody>
       </Table>
-  
-      <div className="flex justify-between w-full ">
-        <Button 
-            className="bg-sidebar text-foreground border-gray-600 hover:bg-gray-700"
 
+  
+      <div className="flex justify-between w-full pt-4 ">
+        <Button 
+          className="bg-sidebar text-foreground border-gray-600 hover:bg-gray-700"
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-        >
+          disabled={currentPage === 1}>
           Prev
         </Button>
-        {/* <span className="text-lg font-semibold">
-          Page {currentPage} of {totalPages}
-        </span> */}
-        <Button
-            className="bg-sidebar text-foreground border-gray-600 hover:bg-gray-700"
 
+        <Button
+          className="bg-sidebar text-foreground border-gray-600 hover:bg-gray-700"
           onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-          disabled={currentPage === totalPages}
-        >
+          disabled={currentPage === totalPages}>
           Next
         </Button>
       </div>
-    </div>
+
+  </Card>
   ); }
 

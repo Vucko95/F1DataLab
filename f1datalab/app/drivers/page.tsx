@@ -2,13 +2,13 @@
 import { useState } from "react";
 import { TopSection } from "@/components/drivers/TopSection";
 import { DriverCard } from "@/components/drivers/DriverCard";
-import { TableCard } from "@/components/drivers/TableCard";
+import { DriversTable } from "@/components/drivers/DriversTable";
 import { BarCard } from "@/components/drivers/BarCard";
 import { TreeCard } from "@/components/drivers/TreeCard";
 import { LineCard } from "@/components/drivers/LineCard";
 import { ModeToggle } from "@/components/ui/ModeToggle"
 import { DropDown } from "@/components/drivers/DropDown"
-
+import { ModeCoffe } from "@/components/ui/ModeCoffe";
 
 
 
@@ -22,19 +22,30 @@ export default function DriversPage() {
   return (
 
     <div className="p-4 pl-8">
+      <ModeCoffe />
       <ModeToggle />
+
       <div className="pb-4 pt-0">
         <DropDown onYearChange={handleYearChange} />
       </div>
-      {/* <TopSection /> PICK YEAR BUTTOn */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 justify-items-center">
 
-        <TableCard year={selectedYear} />
-        <LineCard year={selectedYear} />
-        <BarCard year={selectedYear} />
-        <TreeCard year={selectedYear} />
-        {/* <PieCard  /> */}
+      <div className="grid grid-cols-10 gap-4 justify-items-center">
 
+        <div className="col-span-3 w-full">
+          <DriversTable year={selectedYear} />
+        </div>
+
+        <div className="col-span-7 w-full">
+          <LineCard year={selectedYear} />
+        </div>
+
+        <div className="col-span-5 w-full">
+          <BarCard year={selectedYear} />
+        </div>
+
+        <div className="col-span-5 w-full">
+          <TreeCard year={selectedYear} />
+        </div>
       </div>
     </div>
   );
