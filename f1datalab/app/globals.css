@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .responsive-text {
-  @apply text-base 2k:text-xl 4k:text-3xl;
+  @apply text-base 2k:text-xl 4k:text-4xl;
 }
 
 .responsive-header {
@@ -11,7 +11,7 @@
 }
 
 .responsive-logo {
-  @apply w-[35px] h-[35px] 2k:w-[40px] 2k:h-[40px] 4k:w-[48px] 4k:h-[48px];
+  @apply w-[24px] h-[24px] 2k:w-[40px] 2k:h-[40px] 4k:w-[48px] 4k:h-[48px];
 }
 
 body {

@@ -51,8 +51,8 @@ export function ConstructorsTable({ year }: TableCardProps) {
             <Image
               src={`/images/constructors/${constructor.constructorId}.webp`}
               alt="Constructor Logo"
-              width={35}
-              height={35}
+              width={24}
+              height={24}
               className="rounded-sm responsive-logo"
             />
             {constructor.constructor_name}
