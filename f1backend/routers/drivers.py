@@ -387,7 +387,7 @@ async def get_driver_points_by_race(year: int, db: Session = Depends(get_databas
 # GET ALL RACES 
 # SELECT raceId from races where year = 2023
     races = (
-        db.query(Race.raceId)
+        db.query(Race.raceId, Race.name)
         .filter(Race.year == year)
         .order_by(Race.date)
         .all()
@@ -432,8 +432,13 @@ async def get_driver_points_by_race(year: int, db: Session = Depends(get_databas
     response = []
     cumulative_points = {driver.driverRef: 0 for driver in drivers}
 
+    start_data = {"race": 0, "race_name": ""}
+    for driver in drivers:
+        start_data[driver.driverRef] = 0.0
+    response.append(start_data)
+
     for race in races:
-        race_data = {"race": race.raceId}
+        race_data = {"race": race.raceId,"race_name" : race.name[:3].upper()}
 
         for driver in drivers:
             race_data[driver.driverRef] = cumulative_points[driver.driverRef]
