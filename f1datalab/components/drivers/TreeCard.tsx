@@ -1,5 +1,5 @@
 "use client"
-import { Treemap } from 'recharts';
+import { Treemap , ResponsiveContainer } from 'recharts';
 import { useEffect, useState } from "react";
 import { fetchDriverStandingsYearTree } from "@/app/services/api";
 import {
@@ -81,15 +81,10 @@ export function TreeCard({ year }: TreeGraphProps) {
         className="absolute">
         <h1>Driver Points for season</h1>
       </CardHeader>
-      <CardContent className="pt-14   ">
-        <Treemap
-          width={700}
-          height={350}
-          data={transformedData}
-          dataKey="size"
-          stroke="#000000"
-          fill="#000000"
-        />
+      <CardContent className="pt-14 w-full h-full  ">
+        <ResponsiveContainer width="100%" height="100%">
+          <Treemap width={700} height={350} data={transformedData} dataKey="size" stroke="#000000" fill="#000000" />
+        </ResponsiveContainer>
       </CardContent>
     </Card>
   )
