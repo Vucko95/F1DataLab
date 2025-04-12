@@ -77,23 +77,95 @@ def append_colors_to_labels(response_data):
 
     return response_data
 
-@router.get("/race/laptimes/{raceId}",tags=["Race"],summary="Average Laptimes per race" )
+
+def append_colors_to_laps(response_data):
+    color_mapping = {
+        'max_verstappen': '#0a208d',
+        'perez': '#0a208d',
+        'norris': '#FF8000',
+        'piastri': '#FF8000',
+        'leclerc': '#FF0000',
+        'sainz': '#FF0000',
+        'russell': '#0af1e6',
+        'hamilton': '#0af1e6',
+        'albon': '#2a98ed',
+        'hulkenberg': '#9f9e9e',
+        'alonso': '#066945',
+        'stroll': '#066945',
+        'ocon': '#2263e6',
+        'tsunoda': '#334396',
+        'gasly': '#2263e6',
+    }
+
+    # Append color based on driver name
+    for item in response_data:
+        item["color"] = color_mapping.get(item["driver"], "#000000")  # Default to black if not found
+
+    return response_data
+
+@router.get("/race/laptimes/{raceId}", tags=["Race"], summary="Best & Worst Lap Times for Top 10 Drivers")
 async def get_driver_laptimes(raceId: int, db: Session = Depends(get_database_session)):
     try:
-        lap_times_query = (
+        # Step 1: Get top 10 drivers based on average lap time
+        top_drivers = (
             db.query(
+                Driver.driverId,
                 Driver.driverRef,
-                func.avg(LapTime.milliseconds).label('avg_lap_time')
+                func.avg(LapTime.milliseconds).label("avg_lap_time")
             )
             .join(Driver, LapTime.driverId == Driver.driverId)
             .filter(LapTime.raceId == raceId)
             .group_by(Driver.driverId)
-            .order_by('avg_lap_time')
+            .order_by("avg_lap_time")
             .limit(10)
             .all()
         )
 
-        return lap_times_query
+        # Extract top 10 driver IDs
+        top_driver_ids = {driver_id for driver_id, _, _ in top_drivers}
+
+        # Step 2: Use ROW_NUMBER() to get the 30 best laps per driver
+        best_laps_subquery = (
+            db.query(
+                LapTime.driverId,
+                LapTime.milliseconds,
+                func.row_number()
+                .over(partition_by=LapTime.driverId, order_by=LapTime.milliseconds)
+                .label("lap_rank")  # Assigns a ranking to each lap per driver
+            )
+            .filter(LapTime.raceId == raceId, LapTime.driverId.in_(top_driver_ids))
+            .subquery()
+        )
+
+        # Step 3: Compute best & worst lap **only from top 30 laps per driver**
+        best_worst_laps = (
+            db.query(
+                Driver.driverRef,
+                func.min(best_laps_subquery.c.milliseconds).label("best_lap"),
+                func.max(best_laps_subquery.c.milliseconds).label("worst_lap"),
+            )
+            .join(Driver, Driver.driverId == best_laps_subquery.c.driverId)
+            .filter(best_laps_subquery.c.lap_rank <= 30)  # Only top 30 laps per driver
+            .group_by(Driver.driverRef)
+            .all()
+        )
+
+        # Step 4: Convert to JSON-serializable format
+        result = [
+            {
+                "driver": driver, 
+                "best_lap": int(best) / 10000, 
+                "worst_lap": int(worst) / 10000
+            }
+            for driver, best, worst in best_worst_laps
+        ]
+        result = append_colors_to_laps(result)
+
+        return result
+
+    except Exception as e:
+        print(f"An error occurred while processing the request: {str(e)}")
+        return {"error": "An error occurred while processing the request"}
 #  TODO ADD +- 3 and then make some kind of a bar chart with their average speed
 #  TODO TEST THE GRAPH AS WELL    
 
@@ -211,6 +283,62 @@ async def get_race_details(raceId: int, db: Session = Depends(get_database_sessi
              for result, driver in results
         ]
         return results
+
+    except Exception as e:
+        print(f"An error occurred while processing the request: {str(e)}")
+        return {"error": "An error occurred while processing the request"}
+    
+@router.get("/race/details/{raceId}/difference",tags=["Race"],summary="Get difference between starting and finishing position.")
+async def get_race_details(raceId: int, db: Session = Depends(get_database_session)):
+    try:
+        results = (
+            db.query(Result, Driver)
+            .join(Driver, Driver.driverId == Result.driverId)
+            .filter(Result.raceId == raceId)
+            .all()
+        )
+        results = [
+            {
+              "raceId" : result.raceId ,
+              "driverId" : result.driverId,
+              "constructorId" : result.constructorId,
+              "position"  : result.position, 
+              "grid" : result.grid,
+              "forename" : driver.forename,
+              "surname" : driver.surname,
+            }
+             for result, driver in results
+        ]
+        constructor_colors = get_constructor_colors()
+        constructor_mapping = get_constructor_mapping()
+        # return results
+        refined_data = []
+        for driver in results:
+            driver_ref = driver['surname'][:3].upper()
+            name = driver['forename']
+            constructorId = driver['constructorId']
+            grid = driver['grid']
+            position = driver['position']
+            if position is None:
+                gained = 0
+                lost = -grid
+            else:
+                gained = max(0, grid - position)
+                lost = min(0, grid - position)
+            if gained == 0 and lost == 0:
+                continue
+            team_name = constructor_mapping.get(constructorId, "Unknown")
+            color = constructor_colors.get(team_name, "#888888")
+            refined_data.append({
+                'driver_name': name,
+                'driver_name_short': driver_ref,
+                'gained': gained,
+                'lost' : lost,
+                'color': color
+            })
+            refined_data.sort(key=lambda d: (d['gained'], -d['lost']), reverse=True)
+
+        return refined_data
 
     except Exception as e:
         print(f"An error occurred while processing the request: {str(e)}")

@@ -73,7 +73,7 @@ const fetchData = async (url: string, method: string = 'GET', body: any = null) 
     return await fetchData(`http://localhost:8888/race/details/${raceId}`);
   };
   export const fetchRaceStartFinishDiff = async (raceId: number) => {
-    return await fetchData(`http://localhost:8888/race/details/${raceId}/pschart`);
+    return await fetchData(`http://localhost:8888/race/details/${raceId}/difference`);
   };
 
   export const fetchConstructorStandings = async () => {
