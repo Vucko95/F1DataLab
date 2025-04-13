@@ -287,7 +287,77 @@ async def get_race_details(raceId: int, db: Session = Depends(get_database_sessi
     except Exception as e:
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
+
+@router.get("/race/details/{raceId}/summary", tags=["Race"], summary="Get details about a specific race for summary component")
+async def get_race_details(raceId: int, db: Session = Depends(get_database_session)):
+    try:
+        race = (
+            db.query(Race, Circuit)
+            .join(Circuit, Race.circuitId == Circuit.circuitId)
+            .filter(Race.raceId == raceId)
+            .first()
+        )
+
+        if not race:
+            return {"error": f"No race found with raceId {raceId}"}
+
+        race_data, circuit_data = race
+        circuit_id = circuit_data.circuitId
+        race_year = race[0].year
+        previous_years = [2019, 2020, 2021, 2022, 2023, 2024]
+        winners = []
+
+        for year in previous_years:
+            race_in_year = (
+                db.query(Race)
+                .filter(Race.circuitId == circuit_id, Race.year == year)
+                .first()
+            )
+
+            if not race_in_year:
+                continue
+
+            winner_result = (
+                db.query(Result)
+                .filter(Result.raceId == race_in_year.raceId, Result.position == 1)
+                .first()
+            )
+
+            if not winner_result:
+                continue
+
+            driver = (
+                db.query(Driver)
+                .filter(Driver.driverId == winner_result.driverId)
+                .first()
+            )
+
+            if not driver:
+                continue
+
+            winners.append({
+                "year": year,
+                "driver_name": f"{driver.forename} {driver.surname}",
+                "constructor_id": winner_result.constructorId,
+                "nationality": driver.nationality,
+            })
+
+        response = {
+            "raceId": race_data.raceId,
+            "race_year": race_year,
+            "circuit_name": circuit_data.name,
+            "circuit_country": circuit_data.country,
+            "circuit_location": circuit_data.location,
+            "previous_year_winners": winners
+        }
+
+        return response
+
+    except Exception as e:
+        print(f"An error occurred while processing the request: {str(e)}")
+        return {"error": "An internal error occurred while processing the request"}
     
+
 @router.get("/race/details/{raceId}/difference",tags=["Race"],summary="Get difference between starting and finishing position.")
 async def get_race_details(raceId: int, db: Session = Depends(get_database_session)):
     try:
@@ -343,7 +413,99 @@ async def get_race_details(raceId: int, db: Session = Depends(get_database_sessi
     except Exception as e:
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
-    
+
+@router.get("/race/details/{raceId}/position_diff",tags=["Race"],summary="Get difference between starting and finishing position.")
+async def get_race_details(raceId: int, db: Session = Depends(get_database_session)):
+    try:
+        results = (
+            db.query(Result, Driver)
+            .join(Driver, Driver.driverId == Result.driverId)
+            .filter(Result.raceId == raceId)
+            .all()
+        )
+        results = [
+            {
+              "raceId" : result.raceId ,
+              "driverId" : result.driverId,
+              "constructorId" : result.constructorId,
+              "position"  : result.position, 
+              "grid" : result.grid,
+              "forename" : driver.forename,
+              "surname" : driver.surname,
+            }
+             for result, driver in results
+        ]
+        constructor_colors = get_constructor_colors()
+        constructor_mapping = get_constructor_mapping()
+        # return results
+        refined_data = []
+        for driver in results:
+            driver_ref = driver['surname'][:3].upper()
+            name = driver['forename']
+            constructorId = driver['constructorId']
+            starting_position = driver['grid']
+            ending_position = driver['position']
+            team_name = constructor_mapping.get(constructorId, "Unknown")
+            color = constructor_colors.get(team_name, "#888888")
+            refined_data.append({
+                'driver_name': name,
+                'driver_name_short': driver_ref,
+                'starting_position': starting_position,
+                'ending_position' : ending_position,
+                'color': color
+            })
+
+            # refined_data = refined_data[:10]s
+        return refined_data
+
+    except Exception as e:
+        print(f"An error occurred while processing the request: {str(e)}")
+        return {"error": "An error occurred while processing the request"}
+
+@router.get("/race/details/{raceId}/position_diff2", tags=["Race"], summary="Get difference between starting and finishing position.")
+async def get_race_details(raceId: int, db: Session = Depends(get_database_session)):
+    try:
+        results = (
+            db.query(Result, Driver)
+            .join(Driver, Driver.driverId == Result.driverId)
+            .filter(Result.raceId == raceId)
+            .all()
+        )
+
+        constructor_colors = get_constructor_colors()
+        constructor_mapping = get_constructor_mapping()
+
+        transformed_data = []
+
+        for result, driver in results:
+            driver_ref = driver.surname[:3].upper()
+            constructorId = result.constructorId
+            team_name = constructor_mapping.get(constructorId, "Unknown")
+            color = constructor_colors.get(team_name, "#888888")
+
+            # 2 entries per driver: start and finish
+            transformed_data.extend([
+                {
+                    "driver_name": driver.forename,
+                    "driver_name_short": driver_ref,
+                    "position": result.grid,
+                    "xAxisValue": 0,
+                    "color": color
+                },
+                {
+                    "driver_name": driver.forename,
+                    "driver_name_short": driver_ref,
+                    "position": result.position,
+                    "xAxisValue": 1,
+                    "color": color
+                }
+            ])
+
+        return transformed_data
+
+    except Exception as e:
+        print(f"An error occurred while processing the request: {str(e)}")
+        return {"error": "An error occurred while processing the request"}
 
 @router.get("/race/details/barchart/constructor/{raceId}", tags=["Race"], summary="Get Details about a specific race.")
 async def get_race_details(raceId: int, db: Session = Depends(get_database_session)):
@@ -383,6 +545,59 @@ async def get_race_details(raceId: int, db: Session = Depends(get_database_sessi
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
 
+@router.get("/race/details/{raceId}/treemap")
+async def driver_standings(raceId: int, db: Session = Depends(get_database_session)):
+    try:
+        constructor_colors = get_constructor_colors()
+        constructor_mapping = get_constructor_mapping()
+
+            # team_name = constructor_mapping.get(constructorId, "Unknown")
+            # color = constructor_colors.get(team_name, "#888888")
+        results = (
+            db.query(Result, Driver)
+            .join(Driver, Driver.driverId == Result.driverId)
+            .filter(Result.raceId == raceId)
+            .all()
+        )
+
+        results = [
+            {
+              "raceId" : result.raceId ,
+              "driverId" : result.driverId,
+              "constructorId" : result.constructorId,
+              "points" : result.points,
+              "forename" : driver.forename,
+              "surname" : driver.surname,
+            }
+             for result, driver in results
+        ]
+        constructor_colors = get_constructor_colors()
+        constructor_mapping = get_constructor_mapping()
+        refined_data_map = {}
+        for driver in results:
+            # name = driver['forename']
+            constructorId = driver['constructorId']
+            points = driver['points']
+            team_name = constructor_mapping.get(constructorId, "MIA")
+            color = constructor_colors.get(team_name, "#888888")
+            if constructorId in refined_data_map:
+                refined_data_map[constructorId]['points'] += points
+            else:
+                refined_data_map[constructorId] = {
+                    'constructorId': constructorId,
+                    'constructor_name': team_name,
+                    'points': points,
+                    'color': color
+                }
+        refined_data = list(refined_data_map.values())
+        return refined_data
+
+
+
+# {'constructorId': 1, 'constructor_name': 'McLaren', 'total_points': 517.0, 'color': '#FF8700'}
+    except Exception as e:
+        print(f"An error occurred while processing the request: {str(e)}")
+        return {"error": "An error occurred while processing the request"}
 
 
 @router.get("/standings/constructors/{year}/barchart",tags=["Constructorr Standings"],summary="Driver standings BarChart API")
