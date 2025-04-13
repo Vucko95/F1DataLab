@@ -56,7 +56,7 @@ export function RaceCircuitInfo({ raceId }: RaceIdProps) {
         <div className="flex items-center space-x-6 p-4">
         <Image
         className="rounded-[20px]"
-        src="/images/austrian.png" 
+        src="/images/circuit/austrian.png" 
           alt=""
           width={100}
           height={100}

@@ -50,7 +50,7 @@ export function RaceTable({ raceId }: RaceIdProps) {
     <Card >
       <CardContent>
         <Table>
-          {/* <TableHeader>
+          <TableHeader>
             <TableRow>
               <TableHead className="text-center">Position</TableHead>
               <TableHead className="text-center">N</TableHead>
@@ -58,7 +58,7 @@ export function RaceTable({ raceId }: RaceIdProps) {
               <TableHead className="text-center">Constructor</TableHead>
               <TableHead className="text-center">Time</TableHead>
             </TableRow>
-          </TableHeader> */}
+          </TableHeader>
           <TableBody>
             {paginatedDrivers.map((driver) => {
               const nationalityFlag = nationalityToFlag[driver.nationality] || "us";
@@ -79,7 +79,7 @@ export function RaceTable({ raceId }: RaceIdProps) {
           </TableBody>
         </Table>
 
-        <div className="flex justify-between w-full ">
+        <div className="flex justify-between w-full pt-4 ">
           <Button
             className="bg-sidebar text-foreground border-gray-600 hover:bg-gray-700"
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
