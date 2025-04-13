@@ -4,12 +4,13 @@ import { useState } from "react";
 // import { DriverCard } from "@/components/races/RaceTable";
 
 import { RaceTable } from "@/components/races/RaceTable";
-import { BarGridPositionCard } from "@/components/races/BarGridPositionCard";
+import { BarGridPositionCard } from "@/components/abandoned/BarGridPositionCard";
 // import { RaceCard } from "@/components/races/RaceTableCard";
-import { BarCard } from "@/components/races/BarCard";
+import { BarCard } from "@/components/abandoned/BarCard";
 // import { TreeCard } from "@/components/constructors/TreeCard";
-import { LineCard } from "@/components/races/LineCard";
-import { RacePaceCard } from "@/components/races/RacePaceCard";
+import { LineCardGainedLostPositionRace } from "@/components/abandoned/LineCardGainedLostPositionRace";
+import { TreeCardConstructorsRace } from "@/components/races/TreeCardConstructorsRace";
+import { RaceCircuitInfo } from "@/components/races/RaceCircuitInfo";
 import { RacePaceCardHC } from "@/components/races/RacePaceCardHC";
 import { ModeToggle } from "@/components/ui/ModeToggle"
 import { DropDown } from "@/components/races/DropDown"
@@ -32,6 +33,8 @@ export default function RacesPage() {
     setSelectedRace(raceId);
   };
 
+  {/* TODO MAYBE ADD QUALY POSITION AND RACE GAINS, (how much a driver gained from starting position until the finish line) */}
+  {/* TODO RACE PACE CARD - RACE EVOLUTION by LAP CARD */}
   return (
 
     <div className="p-4 pl-8">
@@ -40,30 +43,34 @@ export default function RacesPage() {
         <DropDown onYearChange={handleYearChange} />
         <DropDownRace year={selectedYear} onRaceChange={handleRaceChange} />
       </div>
+
       <div className="grid grid-cols-10 gap-4 justify-items-center">
 
-        <div className="col-span-4 w-full">
-          {/* TODO MAYBE ADD QUALY POSITION AND RACE GAINS */}
+        <div className="col-span-3 w-full">
+        <RaceCircuitInfo raceId={selectedRace} />
+        </div>
+
+        <div className="col-span-3 w-full">
         <RaceTable raceId={selectedRace} />
         </div>
+
+        <div className="col-span-4 w-full">
+        <TreeCardConstructorsRace raceId={selectedRace} />
+        </div>
+
+
         <div className="col-span-6 w-full">
-        <BarGridPositionCard  raceId={selectedRace} />
         </div>
-        <div className="col-span-5 w-full">
-        <LineCard year={selectedYear} />
-        </div>
-        <div className="col-span-5 w-full">
-        <BarCard year={selectedYear} raceId={selectedRace} />
-        </div>
+
 
         </div>
       </div>
 
 
-  );
+);
 }
 
-      {/* <RaceCard  raceId={selectedRace} /> */}
+    {/* <RaceCard  raceId={selectedRace} /> */}
       {/* <RaceTable raceId={selectedRace} /> */}
       {/* <RacePaceCard  raceId={selectedRace} /> */}
       {/* <RacePaceCardHC /> */}
