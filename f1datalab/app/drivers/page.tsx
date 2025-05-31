@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
-import { TopSection } from "@/components/drivers/TopSection";
-import { DriverCard } from "@/components/drivers/DriverCard";
-import { DriversTable } from "@/components/drivers/DriversTable";
-import { BarCard } from "@/components/drivers/BarCard";
-import { TreeCard } from "@/components/drivers/TreeCard";
-import { LineCard } from "@/components/drivers/LineCard";
+import { TopSection } from "@/app/drivers/components/TopSection";
+import { DriverCard } from "@/app/drivers/components/DriverCard";
+import { DriversTable } from "@/app/drivers/components/DriversTable";
+import { BarCard } from "@/app/drivers/components/BarCard";
+import { TreeCard } from "@/app/drivers/components/TreeCard";
+import { LineCard } from "@/app/drivers/components/LineCard";
 import { ModeToggle } from "@/components/ui/ModeToggle"
-import { DropDown } from "@/components/drivers/DropDown"
+import { DropDown } from "@/app/drivers/components/DropDown"
 import { ModeCoffe } from "@/components/ui/ModeCoffe";
 
 
