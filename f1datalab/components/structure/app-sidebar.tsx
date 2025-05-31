@@ -1,5 +1,5 @@
 "use client";
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/structure/sidebar";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { Puzzle, CircleUser, Gauge, Users, Flag } from "lucide-react";
 import Image from "next/image";
 
@@ -8,7 +8,7 @@ const items = [
   { title: "Races", url: "/races", icon: Flag },
   { title: "Drivers", url: "/drivers", icon: CircleUser },
   { title: "Constructors", url: "/constructors", icon: Users },
-  { title: "Compare", url: "/circuits", icon: Gauge },
+  { title: "Compare", url: "/compare", icon: Gauge },
 ];
 
 export function AppSidebar() {
@@ -19,14 +19,14 @@ export function AppSidebar() {
         <SidebarGroup>
           <Image
             className="block dark:hidden"
-            src="/images/logo/light.svg"
+            src="/images/logo/darknlight.png"
             alt="light-mode-image"
             width={180}
             height={180}
           />
           <Image
             className="hidden dark:block"
-            src="/images/logo/dark.svg"
+            src="/images/logo/darknlight.png"
             alt="dark-mode-image"
             width={180}
             height={180}
