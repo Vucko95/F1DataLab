@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
-import { ConstructorsTable } from "@/components/constructors/ConstructorsTable";
-import { BarCard } from "@/components/constructors/BarCard";
-import { TreeCard } from "@/components/constructors/TreeCard";
-import { LineCard } from "@/components/constructors/LineCard";
+import { ConstructorsTable } from "@/app/constructors/components/ConstructorsTable";
+import { BarCard } from "@/app/constructors/components/BarCard";
+import { TreeCard } from "@/app/constructors/components/TreeCard";
+import { LineCard } from "@/app/constructors/components/LineCard";
 import { ModeToggle } from "@/components/ui/ModeToggle";
 import { ModeCoffe } from "@/components/ui/ModeCoffe";
-import { DropDown } from "@/components/drivers/DropDown";
+import { DropDown } from "@/app/drivers/components/DropDown";
 
 export default function ConstructorsPage() {
   const [selectedYear, setSelectedYear] = useState<number>(2024);
