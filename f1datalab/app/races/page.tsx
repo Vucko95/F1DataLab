@@ -3,18 +3,18 @@ import { useState } from "react";
 // import { TopSection } from "@/components/races/TopSection";
 // import { DriverCard } from "@/components/races/RaceTable";
 
-import { RaceTable } from "@/components/races/RaceTable";
+import { RaceTable } from "@/app/races/components/RaceTable";
 import { BarGridPositionCard } from "@/components/abandoned/BarGridPositionCard";
 // import { RaceCard } from "@/components/races/RaceTableCard";
 import { BarCard } from "@/components/abandoned/BarCard";
 // import { TreeCard } from "@/components/constructors/TreeCard";
 import { LineCardGainedLostPositionRace } from "@/components/abandoned/LineCardGainedLostPositionRace";
-import { TreeCardConstructorsRace } from "@/components/races/TreeCardConstructorsRace";
-import { RaceCircuitInfo } from "@/components/races/RaceCircuitInfo";
-import { RacePaceCardHC } from "@/components/races/RacePaceCardHC";
+import { TreeCardConstructorsRace } from "@/app/races/components/TreeCardConstructorsRace";
+import { RaceCircuitInfo } from "@/app/races/components/RaceCircuitInfo";
+import { RacePaceCardHC } from "@/app/races/components/RacePaceCardHC";
 import { ModeToggle } from "@/components/ui/ModeToggle"
-import { DropDown } from "@/components/races/DropDown"
-import { DropDownRace } from "@/components/races/DropDownRace"
+import { DropDown } from "@/app/races/components/DropDown"
+import { DropDownRace } from "@/app/races/components/DropDownRace"
 // import { Card, CardContent } from "@/components/ui/card";
 
 
