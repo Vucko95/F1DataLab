@@ -1,14 +1,15 @@
 "use client";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { Puzzle, CircleUser, Gauge, Users, Flag } from "lucide-react";
+import { House, Car, GitCompare, ChevronsLeftRightEllipsis, Flag, Mail } from "lucide-react";
 import Image from "next/image";
 
 const items = [
-  { title: "Home", url: "/", icon: Puzzle },
+  { title: "Home", url: "/", icon: House },
   { title: "Races", url: "/races", icon: Flag },
-  { title: "Drivers", url: "/drivers", icon: CircleUser },
-  { title: "Constructors", url: "/constructors", icon: Users },
-  { title: "Compare", url: "/compare", icon: Gauge },
+  { title: "Drivers", url: "/drivers", icon: Car },
+  { title: "Constructors", url: "/constructors", icon: ChevronsLeftRightEllipsis },
+  { title: "Compare", url: "/compare", icon: GitCompare },
+  { title: "Feedback", url: "/feedback", icon: Mail },
 ];
 
 export function AppSidebar() {
@@ -32,11 +33,11 @@ export function AppSidebar() {
             height={180}
           />
           <SidebarGroupContent>
-            <SidebarMenu className="pt-2">
+            <SidebarMenu className="">
               {items.map((item) => (
-                <SidebarMenuItem className="pt-2 ml-1" key={item.title}>
+                <SidebarMenuItem className="" key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url} className="flex items-center text-lg">
+                    <a href={item.url} className="flex items-center text-xl text-muted-foreground hover:text-primary transition-colors">
                       <item.icon />
                       <span>{item.title}</span>
                     </a>
