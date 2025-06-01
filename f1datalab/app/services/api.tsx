@@ -28,109 +28,121 @@ const fetchData = async (url: string, method: string = 'GET', body: any = null) 
   }
 };
 
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8888';
 
 
   export const fetchTimeBeforeNextRace = async () => {
-    return await fetchData('http://localhost:8888/race/nex');
+    return await fetchData(`${API_BASE_URL}/race/next`);
+
   };
 
-  export const fetchLastRaceDetails = async () => {
-    return await fetchData('http://localhost:8888/race/last');
-  };
+export const fetchLastRaceDetails = async () => {
+  return await fetchData(`${API_BASE_URL}/race/last`);
+};
 
-  export const fetchDriverStandingsYearRace = async (year: number, raceNumber: number) => {
-    return await fetchData(`http://localhost:8888/standings/drivers/${year}/${raceNumber}`);
-  };
+export const fetchDriverStandingsYearRace = async (year: number, raceNumber: number) => {
+  return await fetchData(`${API_BASE_URL}/standings/drivers/${year}/${raceNumber}`);
+};
 
-  export const fetchDriverStandingsYear = async (year: number) => {
-    return await fetchData(`http://localhost:8888/standings/drivers/${year}/`);
-  };
-  export const fetchConstructorStandingsYear = async (year: number) => {
-    return await fetchData(`http://localhost:8888/standings/constructors/${year}/`);
-  };
+export const fetchDriverStandingsYear = async (year: number) => {
+  return await fetchData(`${API_BASE_URL}/standings/drivers/${year}/`);
+};
 
-  export const fetchDriverStandingsYearTree = async (year: number) => {
-    return await fetchData(`http://localhost:8888/standings/drivers/${year}/treemap`);
-  };
-  export const fetchConstructorStandingsYearTree = async (year: number) => {
-    return await fetchData(`http://localhost:8888/standings/constructors/${year}/treemap`);
-  };
-  
-  export const fetchDriverStandingsYearBar = async (year: number) => {
-    return await fetchData(`http://localhost:8888/standings/drivers/${year}/barchart`);
-  };
-  export const fetchRacesConstructorBarChart = async (raceId: number) => {
-    return await fetchData(`http://localhost:8888/race/details/barchart/constructor/${raceId}`);
-  };
-  export const fetchConstructorStandingsYearBar = async (year: number) => {
-    return await fetchData(`http://localhost:8888/standings/constructors/${year}/barchart`);
-  };
+export const fetchConstructorStandingsYear = async (year: number) => {
+  return await fetchData(`${API_BASE_URL}/standings/constructors/${year}/`);
+};
 
-  export const fetchRacesForSpecificYear = async (year: number) => {
-    return await fetchData(`http://localhost:8888/race/list/${year}`);
-  };
-  export const fetchRaceDetails = async (raceId: number) => {
-    return await fetchData(`http://localhost:8888/race/details/${raceId}`);
-  };
-  export const fetchRaceDetailsSummary = async (raceId: number) => {
-    return await fetchData(`http://localhost:8888/race/details/${raceId}/summary`);
-  };
-  export const fetchRaceStartFinishDiff = async (raceId: number) => {
-    return await fetchData(`http://localhost:8888/race/details/${raceId}/difference`);
-  };
-  export const fetchRaceStartFinishDiff2 = async (raceId: number) => {
-    return await fetchData(`http://localhost:8888/race/details/${raceId}/position_diff`);
-  };
-  export const fetchRaceTreemap = async (raceId: number) => {
-    return await fetchData(`http://localhost:8888/race/details/${raceId}/treemap`);
-  };
+export const fetchDriverStandingsYearTree = async (year: number) => {
+  return await fetchData(`${API_BASE_URL}/standings/drivers/${year}/treemap`);
+};
 
-  export const fetchConstructorStandings = async () => {
-    return await fetchData('http://localhost:8888/standings/constructors/2023');
-  };
-  
-  export const fetchCircuitsByYear = async () => {
-    return await fetchData('http://localhost:8888/circuits/2023');
-  };
-  
-  export const fetchDriversForSpecificYear = async () => {
-    return await fetchData('http://localhost:8888/drivers/2023');
-  };
-  
-  export const fetchDriversPointsForGraph = async (year: number) => {
-    return await fetchData(`http://localhost:8888/drivers/graph/${year}`);
-  };
-  export const fetchConstructorPointsForGraph = async (year: number) => {
-    return await fetchData(`http://localhost:8888/constructors/graph/${year}`);
-  };
-  
-  export const fetchConstructorsGraph = async () => {
-    return await fetchData('http://localhost:8888/constructors/graph/2024');
-  };
-  export const fetchRacePaceData = async (raceId: number) => {
-    return await fetchData(`http://localhost:8888/race/laptimes/${raceId}`);
-  };
-  
+export const fetchConstructorStandingsYearTree = async (year: number) => {
+  return await fetchData(`${API_BASE_URL}/standings/constructors/${year}/treemap`);
+};
 
-  export const fetchRacesForSelectedYear = async () => {
-    return await fetchData('http://localhost:8888/race/list/2023');
-  };
-  
-  export const fetchDriverStandingsForDonuts = async (year: number) => {
-    return await fetchData(`http://localhost:8888/drivers/donut/${year}`);
-  };
-  
-  export const fetchConstructorStandingsBarGraph = async () => {
-    return await fetchData('http://localhost:8888/constructors/bar/2023');
-  };
-  
-  export const fetchConstructorStandingsForDonuts = async () => {
-    return await fetchData('http://localhost:8888/constructors/donut/2023');
-  };
-  
-  export const fetchDriverStandignsBarGraph = async () => {
-    return await fetchData('http://localhost:8888/drivers/bar/2023');
-  };
+export const fetchDriverStandingsYearBar = async (year: number) => {
+  return await fetchData(`${API_BASE_URL}/standings/drivers/${year}/barchart`);
+};
+
+export const fetchRacesConstructorBarChart = async (raceId: number) => {
+  return await fetchData(`${API_BASE_URL}/race/details/barchart/constructor/${raceId}`);
+};
+
+export const fetchConstructorStandingsYearBar = async (year: number) => {
+  return await fetchData(`${API_BASE_URL}/standings/constructors/${year}/barchart`);
+};
+
+export const fetchRacesForSpecificYear = async (year: number) => {
+  return await fetchData(`${API_BASE_URL}/race/list/${year}`);
+};
+
+export const fetchRaceDetails = async (raceId: number) => {
+  return await fetchData(`${API_BASE_URL}/race/details/${raceId}`);
+};
+
+export const fetchRaceDetailsSummary = async (raceId: number) => {
+  return await fetchData(`${API_BASE_URL}/race/details/${raceId}/summary`);
+};
+
+export const fetchRaceStartFinishDiff = async (raceId: number) => {
+  return await fetchData(`${API_BASE_URL}/race/details/${raceId}/difference`);
+};
+
+export const fetchRaceStartFinishDiff2 = async (raceId: number) => {
+  return await fetchData(`${API_BASE_URL}/race/details/${raceId}/position_diff`);
+};
+
+export const fetchRaceTreemap = async (raceId: number) => {
+  return await fetchData(`${API_BASE_URL}/race/details/${raceId}/treemap`);
+};
+
+export const fetchConstructorStandings = async () => {
+  return await fetchData(`${API_BASE_URL}/standings/constructors/2023`);
+};
+
+export const fetchCircuitsByYear = async () => {
+  return await fetchData(`${API_BASE_URL}/circuits/2023`);
+};
+
+export const fetchDriversForSpecificYear = async () => {
+  return await fetchData(`${API_BASE_URL}/drivers/2023`);
+};
+
+export const fetchDriversPointsForGraph = async (year: number) => {
+  return await fetchData(`${API_BASE_URL}/drivers/graph/${year}`);
+};
+
+export const fetchConstructorPointsForGraph = async (year: number) => {
+  return await fetchData(`${API_BASE_URL}/constructors/graph/${year}`);
+};
+
+export const fetchConstructorsGraph = async () => {
+  return await fetchData(`${API_BASE_URL}/constructors/graph/2024`);
+};
+
+export const fetchRacePaceData = async (raceId: number) => {
+  return await fetchData(`${API_BASE_URL}/race/laptimes/${raceId}`);
+};
+
+export const fetchRacesForSelectedYear = async () => {
+  return await fetchData(`${API_BASE_URL}/race/list/2023`);
+};
+
+export const fetchDriverStandingsForDonuts = async (year: number) => {
+  return await fetchData(`${API_BASE_URL}/drivers/donut/${year}`);
+};
+
+export const fetchConstructorStandingsBarGraph = async () => {
+  return await fetchData(`${API_BASE_URL}/constructors/bar/2023`);
+};
+
+export const fetchConstructorStandingsForDonuts = async () => {
+  return await fetchData(`${API_BASE_URL}/constructors/donut/2023`);
+};
+
+export const fetchDriverStandignsBarGraph = async () => {
+  return await fetchData(`${API_BASE_URL}/drivers/bar/2023`);
+};
 
 
 
