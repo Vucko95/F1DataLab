@@ -16,16 +16,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast"; // Assuming you've added Toast
-import { ToastAction } from "@/components/ui/toast"; // Assuming you've added Toast
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
-// Define the schema for your feedback form using Zod
+
 const feedbackFormSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }).max(50, {
     message: "Name must not be longer than 50 characters.",
-  }).optional(), // Make name optional if not strictly required
+  }).optional(),
 
   email: z.string().email({
     message: "Please enter a valid email address.",
@@ -46,11 +46,10 @@ const feedbackFormSchema = z.object({
 
 type FeedbackFormValues = z.infer<typeof feedbackFormSchema>;
 
-// Get the API base URL from the environment variable
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:8888';
 
 export default function FeedbackPage() {
-  const { toast } = useToast(); // Initialize toast hook
+  const { toast } = useToast();
 
   const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(feedbackFormSchema),
@@ -64,8 +63,7 @@ export default function FeedbackPage() {
 
   async function onSubmit(data: FeedbackFormValues) {
     try {
-      // Send data to your backend API endpoint
-      const response = await fetch(`${API_BASE_URL}/feedback`, { // Adjust backend endpoint if different
+      const response = await fetch(`${API_BASE_URL}/feedback`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,7 +76,7 @@ export default function FeedbackPage() {
           title: "Feedback Sent!",
           description: "Thank you for your valuable feedback. We'll get back to you if needed.",
         });
-        form.reset(); // Clear the form after successful submission
+        form.reset();
       } else {
         const errorData = await response.json();
         toast({
