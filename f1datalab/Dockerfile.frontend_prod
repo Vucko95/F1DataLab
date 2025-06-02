@@ -1,22 +1,42 @@
 # f1datalab/Dockerfile.frontend_prod
 
-# --- Stage 1: Build the React application ---
-FROM node:18-alpine as builder
+# --- Stage 1: Build the Next.js application ---
+# Using Node.js 20-alpine as it's an LTS and stable with Next.js 14
+FROM node:20-alpine as builder
 WORKDIR /app
 COPY package.json ./
 COPY package-lock.json ./
-# If you pass REACT_APP_BACKEND_URL via build-arg, remove it now as Nginx handles it
-# ARG REACT_APP_BACKEND_URL_ARG # Not needed if Nginx proxies /api
-RUN npm install
-COPY . .
-RUN npm run build # This command creates the 'build' (or 'dist') directory
 
-# --- Stage 2: Serve the built React app with Nginx ---
-FROM nginx:stable-alpine
-# Copy the built React app from the builder stage into Nginx's web root
-COPY --from=builder /app/build /usr/share/nginx/html
-# Nginx config will be mounted from the host (see docker-compose.yml)
-# So we don't need to COPY it here.
-# EXPOSE 80 # Exposed via docker-compose.yml
-# EXPOSE 443 # Exposed via docker-compose.yml
-CMD ["nginx", "-g", "daemon off;"] # Run Nginx
+# Install dependencies (only in builder stage)
+RUN npm install
+
+# Copy all application files
+COPY . .
+
+# Run the Next.js build. This generates the .next folder.
+RUN npm run build
+
+# --- Stage 2: Create the production Next.js server image ---
+# Use a slim Node.js image for production runtime
+FROM node:20-alpine as runner
+WORKDIR /app
+
+# Set environment variables for Next.js (if needed, e.g., for API_URL)
+# ENV NODE_ENV=production
+
+# Copy .next folder from the builder stage
+COPY --from=builder /app/.next ./.next
+
+# Copy public assets (important for images, favicons, etc.)
+COPY --from=builder /app/public ./public
+
+# Copy package.json and node_modules for production (only prod dependencies)
+# It's better to install production dependencies separately in the runner stage
+COPY package.json ./
+RUN npm install --only=production
+
+# Expose the default Next.js port
+EXPOSE 3000
+
+# Command to run the Next.js production server
+CMD ["npm", "start"]
