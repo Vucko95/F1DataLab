@@ -1,0 +1,22 @@
+# f1datalab/Dockerfile.frontend_prod
+
+# --- Stage 1: Build the React application ---
+FROM node:18-alpine as builder
+WORKDIR /app
+COPY package.json ./
+COPY package-lock.json ./
+# If you pass REACT_APP_BACKEND_URL via build-arg, remove it now as Nginx handles it
+# ARG REACT_APP_BACKEND_URL_ARG # Not needed if Nginx proxies /api
+RUN npm install
+COPY . .
+RUN npm run build # This command creates the 'build' (or 'dist') directory
+
+# --- Stage 2: Serve the built React app with Nginx ---
+FROM nginx:stable-alpine
+# Copy the built React app from the builder stage into Nginx's web root
+COPY --from=builder /app/build /usr/share/nginx/html
+# Nginx config will be mounted from the host (see docker-compose.yml)
+# So we don't need to COPY it here.
+# EXPOSE 80 # Exposed via docker-compose.yml
+# EXPOSE 443 # Exposed via docker-compose.yml
+CMD ["nginx", "-g", "daemon off;"] # Run Nginx

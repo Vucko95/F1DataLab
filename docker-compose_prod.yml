@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./f1datalab
+      dockerfile: Dockerfile.frontend_prod
+    container_name: f1_frontend_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./f1backend
+      dockerfile: Dockerfile.backend_prod
+    container_name: f1_backend_flask
+    environment:
+      DATABASE_URL: mysql://root:123@mysql:3306/f1db
+    depends_on:
+      - mysql
+    restart: unless-stopped
+
+
+  mysql:
+    image: mysql:latest
+    container_name: f1_mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_DATABASE: f1db
+    command: --sql-mode="NO_ENGINE_SUBSTITUTION"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/f1db.sql:/docker-entrypoint-initdb.d/f1db.sql:ro
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
