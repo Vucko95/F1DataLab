@@ -12,7 +12,27 @@ import {
 import { DropDown } from "@/app/races/components/DropDown";
 import { ModeToggle } from "@/components/ui/ModeToggle";
 
-const driversDataByYear = {
+interface DriverStats {
+  wins: number;
+  poles: number;
+  podiums: number;
+  fastestLaps: number;
+  championships: number;
+  dnfs: number;
+  avgGridPos: number;
+  avgRacePos: number;
+  points: number;
+}
+
+interface DriversByYear {
+  [driverName: string]: DriverStats;
+}
+
+interface F1DataByYear {
+  [year: number]: DriversByYear;
+}
+
+const driversDataByYear: F1DataByYear = {
   2024: {
     "Max Verstappen": {
       wins: 5,
@@ -158,30 +178,43 @@ export default function ComparePage() {
   const [selectedDriver1, setSelectedDriver1] = useState<string | null>(null);
   const [selectedDriver2, setSelectedDriver2] = useState<string | null>(null);
 
-  const availableDriversForYear = Object.keys(driversDataByYear[selectedYear] || {});
+  // Type assertion here to tell TypeScript that selectedYear will be a valid key
+  // because we control `driversDataByYear` and `selectedYear` state.
+  const availableDriversForYear = Object.keys(driversDataByYear[selectedYear as keyof typeof driversDataByYear] || {});
 
   useEffect(() => {
-    if (availableDriversForYear.length > 0) {
+    const yearHasData = driversDataByYear[selectedYear as keyof typeof driversDataByYear];
+
+    if (yearHasData && availableDriversForYear.length > 0) {
+      // If selectedDriver1 is null or not in the current year's drivers, set to first available
       if (!selectedDriver1 || !availableDriversForYear.includes(selectedDriver1)) {
         setSelectedDriver1(availableDriversForYear[0]);
       }
+      // If selectedDriver2 is null or not in the current year's drivers or is same as driver1,
+      // try to set to the next available driver.
       if (!selectedDriver2 || !availableDriversForYear.includes(selectedDriver2) || selectedDriver2 === selectedDriver1) {
         const defaultDriver2 = availableDriversForYear.find(driver => driver !== availableDriversForYear[0]);
         setSelectedDriver2(defaultDriver2 || null);
       }
     } else {
+      // If no data for the year, clear selections
       setSelectedDriver1(null);
       setSelectedDriver2(null);
     }
-  }, [selectedYear, availableDriversForYear]);
+  }, [selectedYear, availableDriversForYear, selectedDriver1, selectedDriver2]); // Add selectedDriver1, selectedDriver2 to deps
 
-  const driver1Stats = selectedDriver1 ? driversDataByYear[selectedYear]?.[selectedDriver1] : null;
-  const driver2Stats = selectedDriver2 ? driversDataByYear[selectedYear]?.[selectedDriver2] : null;
-  
+  // Use optional chaining (`?.`) and nullish coalescing (`??`) for safe access
+  const driver1Stats = selectedDriver1
+    ? driversDataByYear[selectedYear as keyof typeof driversDataByYear]?.[selectedDriver1]
+    : null;
+  const driver2Stats = selectedDriver2
+    ? driversDataByYear[selectedYear as keyof typeof driversDataByYear]?.[selectedDriver2]
+    : null;
+
   return (
     <div className="p-4 pl-8">
       <ModeToggle />
-      
+
       <div className="max-w-[90%] mx-auto pt-4">
         <h1 className="text-4xl font-bold text-center mb-2">Driver vs. Driver Comparison</h1>
         <p className="text-lg text-center text-muted-foreground mb-8">
