@@ -3,8 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { ModeToggle } from "@/components/ui/ModeToggle";
 import { CircuitBoard, TrendingUp } from "lucide-react";
+import { headers } from 'next/headers';
 
 export default function Home() {
+    const reqHeaders = headers();
+  console.log('--- Incoming Headers (from Next.js container) ---');
+  reqHeaders.forEach((value, key) => {
+    console.log(`${key}: ${value}`);
+  });
+  console.log('--------------------------------------------------');
+
   return (
     <div className="p-4 pl-8"> 
       <ModeToggle /> 
