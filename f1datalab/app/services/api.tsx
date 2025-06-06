@@ -28,9 +28,10 @@ const fetchData = async (url: string, method: string = 'GET', body: any = null) 
   }
 };
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8888';
-
-
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+if (!API_BASE_URL) {
+  throw new Error("NEXT_PUBLIC_BACKEND_URL is not defined in environment variables.");
+}
 
   export const fetchTimeBeforeNextRace = async () => {
     return await fetchData(`${API_BASE_URL}/race/next`);
