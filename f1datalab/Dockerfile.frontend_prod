@@ -1,8 +1,14 @@
 # f1datalab/Dockerfile.frontend_prod
 
-# --- Stage 1: Build the Next.js application ---
 FROM node:20-alpine as builder
 WORKDIR /app
+
+
+ARG NEXT_PUBLIC_BACKEND_URL
+
+
+ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
+
 COPY package.json ./
 COPY package-lock.json ./
 
@@ -10,11 +16,10 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# --- Stage 2: Create the production Next.js server image ---
 FROM node:20-alpine as runner
 WORKDIR /app
 
-# ENV NODE_ENV=production
+ENV NODE_ENV=production
 
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public

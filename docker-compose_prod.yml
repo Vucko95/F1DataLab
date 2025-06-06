@@ -5,9 +5,9 @@ services:
     build:
       context: ./f1datalab
       dockerfile: Dockerfile.frontend_prod
+      args:
+        NEXT_PUBLIC_BACKEND_URL: http://backend:8888
     container_name: f1_frontend
-    environment:
-      NEXT_PUBLIC_BACKEND_URL: http://backend:8888
     ports:
       - "3000:3000"
     depends_on:
