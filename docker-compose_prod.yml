@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile.frontend_prod
     container_name: f1_frontend
     environment:
-      NEXT_PUBLIC_BACKEND_URL: http://backend:8000
+      NEXT_PUBLIC_BACKEND_URL: http://backend:8888
     ports:
       - "3000:3000"
     depends_on:
