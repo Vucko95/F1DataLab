@@ -28,7 +28,8 @@ const fetchData = async (url: string, method: string = 'GET', body: any = null) 
   }
 };
 
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8888';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8888';
+
 
 
   export const fetchTimeBeforeNextRace = async () => {
