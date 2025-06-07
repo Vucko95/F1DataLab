@@ -47,11 +47,11 @@ export const fetchDriverStandingsYearRace = async (year: number, raceNumber: num
 };
 
 export const fetchDriverStandingsYear = async (year: number) => {
-  return await fetchData(`${API_BASE_URL}/standings/drivers/${year}/`);
+  return await fetchData(`${API_BASE_URL}/standings/drivers/${year}`);
 };
 
 export const fetchConstructorStandingsYear = async (year: number) => {
-  return await fetchData(`${API_BASE_URL}/standings/constructors/${year}/`);
+  return await fetchData(`${API_BASE_URL}/standings/constructors/${year}`);
 };
 
 export const fetchDriverStandingsYearTree = async (year: number) => {
