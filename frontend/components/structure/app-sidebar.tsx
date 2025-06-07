@@ -59,7 +59,7 @@ export function AppSidebar() {
                       className="w-full text-lg justify-start gap-3 p-4"
                       size="lg"
                     >
-                      <span className="flex items-center gap-3">
+                        <span className="flex items-center gap-3 cursor-pointer">
                         <item.icon className="h-6 w-6" />
                         <span>{item.title}</span>
                       </span>
