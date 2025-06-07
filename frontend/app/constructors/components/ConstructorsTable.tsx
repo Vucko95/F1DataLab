@@ -37,7 +37,7 @@ export function ConstructorsTable({ year }: TableCardProps) {
   </CardHeader>
 
   <Table className="responsive-text">
-    <TableHeader className="sticky top-0 bg-background z-10">
+    <TableHeader className="sticky top-0  z-10">
       <TableRow>
         <TableHead className="text-center responsive-text">Team</TableHead>
         <TableHead className="text-center responsive-text">Total Points</TableHead>
