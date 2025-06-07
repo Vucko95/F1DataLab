@@ -3,7 +3,7 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: ./f1datalab
+      context: ./frontend
       dockerfile: Dockerfile.frontend_prod
       args:
         NEXT_PUBLIC_BACKEND_URL: https://formula1datalab.com/api
@@ -14,7 +14,7 @@ services:
       - backend
     volumes:
       - frontend_build_output:/app/.next
-      - ./f1datalab/public:/app/public
+      - ./frontend/public:/app/public
 
 
   backend:
@@ -40,7 +40,7 @@ services:
       - /etc/letsencrypt/:/etc/letsencrypt/:ro 
       - ./certs-data:/var/lib/letsencrypt
       - frontend_build_output:/app/.next:ro
-      - ./f1datalab/public:/app/public:ro
+      - ./frontend/public:/app/public:ro
     depends_on:
       - frontend
       - backend

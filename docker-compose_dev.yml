@@ -3,14 +3,14 @@
 services:
   frontend:
     build:
-      context: ./f1datalab
+      context: ./frontend
       dockerfile: Dockerfile.frontend
       args:
         - REACT_APP_BACKEND_URL_ARG=http://backend:8888 
     ports:
       - "3000:3000"
     volumes:
-      - ./f1datalab:/app
+      - ./frontend:/app
       - /app/node_modules
     environment:
       - WATCHPACK_POLLING=true
