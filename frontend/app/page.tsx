@@ -45,7 +45,7 @@ export default function Home() {
             <Card className="flex flex-col items-center justify-center p-4 text-center">
               <CalendarDays className="h-8 w-8 text-purple-500 mb-2" />
               <CardTitle className="text-xl font-semibold mb-1">Years of Data</CardTitle>
-              <Badge variant="default" className="text-xl px-4  bg-purple-500 text-white">1950-Present</Badge>
+              <Badge variant="default" className="text-xl px-4  bg-purple-500 text-white">2017-2025</Badge>
             </Card>
 
             <Card className="flex flex-col items-center justify-center p-4 text-center">
@@ -115,7 +115,7 @@ export default function Home() {
     <div className="flex items-center justify-between p-3 rounded-md border">
       <div className="flex items-center gap-2">
         <XCircle className="h-5 w-5 text-red-600" />
-        <p className="text-lg font-semibold">Most DNFs (Driver):</p>
+        <p className="text-lg font-semibold">Most DNFs:</p>
       </div>
       <Badge variant="outline" className="text-base px-3 py-1 bg-red-600 text-black">Andrea de Cesaris (148)</Badge>
     </div>
