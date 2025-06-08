@@ -908,3 +908,57 @@ async def get_driver_laptimes(raceId: int, db: Session = Depends(get_database_se
     except Exception as e:
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
+    
+
+@router.get("/race/details/{raceId}/pitstop", tags=["Race"], summary="Get Pitstop details about specific race.")
+async def get_race_pitstops(raceId: int, db: Session = Depends(get_database_session)):
+    try:
+        results = (
+            db.query(Result, Driver)
+            .join(Driver, Driver.driverId == Result.driverId)
+            .filter(Result.raceId == raceId)
+            .filter(Result.position >= 1, Result.position <= 10)
+            .order_by(Result.position.asc())
+            .all()
+        )
+        top_10_driver_ids = [result.driverId for result, _ in results]
+
+        pitstops_data = (
+            db.query(PitStop, Driver)
+            .join(Driver, Driver.driverId == PitStop.driverId)
+            .filter(PitStop.raceId == raceId)
+            .filter(PitStop.driverId.in_(top_10_driver_ids))
+            .order_by(PitStop.lap.asc())
+            .all()
+        )
+
+        driver_pitstop_map = {}
+        for pitstop, driver in pitstops_data:
+            driver_id = str(pitstop.driverId)
+            driver_name = driver.forename + " " + driver.surname
+            driverRef = driver.driverRef
+            stop_number = pitstop.stop
+            duration = pitstop.duration
+            if duration is not None:
+                try:
+                    duration_val = float(duration)
+                except Exception:
+                    duration_val = None
+            else:
+                duration_val = None
+            if driver_id not in driver_pitstop_map:
+                driver_pitstop_map[driver_id] = {
+                    "driverId": driver_id,
+                    "driver_name": driver_name,
+                    "driverRef": driverRef
+                }
+            if duration_val is not None:
+                driver_pitstop_map[driver_id][f"pitStop{stop_number}"] = duration_val
+
+        driverPitStopData = list(driver_pitstop_map.values())
+
+        return driverPitStopData
+
+    except Exception as e:
+        print(f"An error occurred while processing the request: {str(e)}")
+        return {"error": "An error occurred while processing the request"}
