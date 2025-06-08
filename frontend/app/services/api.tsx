@@ -147,6 +147,11 @@ export const fetchDriverStandignsBarGraph = async () => {
 };
 
 
+export const fetchRacePitStopDetails = async (raceId: number) => {
+  return await fetchData(`${API_BASE_URL}/race/details/${raceId}/pitstop`);
+};
+
+
 
 
   export const fetchCircuitWinners =async (circuitId: number) => {

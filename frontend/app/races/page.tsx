@@ -9,6 +9,7 @@ import { BarGridPositionCard } from "@/components/abandoned/BarGridPositionCard"
 import { BarCard } from "@/components/abandoned/BarCard";
 // import { TreeCard } from "@/components/constructors/TreeCard";
 import { LineCardGainedLostPositionRace } from "@/components/abandoned/LineCardGainedLostPositionRace";
+import { PitStops } from "@/app/races/components/PitStops";
 import { TreeCardConstructorsRace } from "@/app/races/components/TreeCardConstructorsRace";
 import { RaceCircuitInfo } from "@/app/races/components/RaceCircuitInfo";
 import { RacePaceCardHC } from "@/app/races/components/RacePaceCardHC";
@@ -48,6 +49,10 @@ export default function RacesPage() {
 
         <div className="col-span-3 w-full">
         <RaceCircuitInfo raceId={selectedRace} />
+        </div>
+
+        <div className="col-span-4 w-full">
+        <PitStops raceId={selectedRace} />
         </div>
 
         <div className="col-span-3 w-full">
