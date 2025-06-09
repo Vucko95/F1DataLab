@@ -1,2 +1,4 @@
 /postman*
 /app/routers/telemetry.py
+*.pyc
+__pycache__/
