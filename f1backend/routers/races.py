@@ -103,6 +103,24 @@ def append_colors_to_laps(response_data):
 
     return response_data
 
+color_mapping = {
+    'max_verstappen': '#0a208d',
+    'perez': '#0a208d',
+    'norris': '#FF8000',
+    'piastri': '#FF8000',
+    'leclerc': '#FF0000',
+    'sainz': '#FF0000',
+    'russell': '#0af1e6',
+    'hamilton': '#0af1e6',
+    'albon': '#2a98ed',
+    'hulkenberg': '#9f9e9e',
+    'alonso': '#066945',
+    'stroll': '#066945',
+    'ocon': '#2263e6',
+    'tsunoda': '#334396',
+    'gasly': '#2263e6',
+}
+
 @router.get("/race/laptimes/{raceId}", tags=["Race"], summary="Best & Worst Lap Times for Top 10 Drivers")
 async def get_driver_laptimes(raceId: int, db: Session = Depends(get_database_session)):
     try:
@@ -962,3 +980,60 @@ async def get_race_pitstops(raceId: int, db: Session = Depends(get_database_sess
     except Exception as e:
         print(f"An error occurred while processing the request: {str(e)}")
         return {"error": "An error occurred while processing the request"}
+
+
+@router.get("/race/details/{raceId}/scatter", tags=["Race"], summary="Get Scatter Plot data about specific race.")
+async def get_race_lap_times_for_scatter_plot(raceId: int, db: Session = Depends(get_database_session)):
+    try:
+        top_10_drivers_query = (
+            db.query(Driver.driverId, Driver.driverRef, Driver.forename, Driver.surname)
+            .join(Result, Driver.driverId == Result.driverId)
+            .filter(Result.raceId == raceId)
+            .filter(Result.position >= 1, Result.position <= 10)
+            .order_by(Result.position.asc())
+            .all()
+        )
+
+        driverLapDataRaw = []
+
+        LAPS_TO_REMOVE_PER_DRIVER = 6 
+
+        for driver_id, driver_ref, forename, surname in top_10_drivers_query:
+            all_laps_for_driver_raw = (
+                db.query(LapTime.lap, LapTime.milliseconds)
+                .filter(LapTime.raceId == raceId, LapTime.driverId == driver_id)
+                .order_by(LapTime.lap.asc())
+                .all()
+            )
+
+            laps_data_prepared = [
+                {"lap": lp.lap, "time": lp.milliseconds}
+                for lp in all_laps_for_driver_raw if lp.milliseconds is not None
+            ]
+
+            if laps_data_prepared:
+                # Sort all laps by time (milliseconds) in descending order (slowest first)
+                laps_data_prepared.sort(key=lambda x: x['time'], reverse=True)
+
+                # Remove the top X slowest laps
+                filtered_laps_for_driver = laps_data_prepared[LAPS_TO_REMOVE_PER_DRIVER:]
+            else:
+                filtered_laps_for_driver = [] # No laps found or all removed
+
+            # Sort laps by lap number in ascending order so laps are in order 
+            filtered_laps_for_driver.sort(key=lambda x: x['lap'])
+
+            driver_name = f"{forename} {surname}" if forename and surname else driver_ref
+            driver_color = color_mapping.get(driver_ref.lower(), "#000000")
+
+            driverLapDataRaw.append({
+                "name": driver_name,
+                "color": driver_color,
+                "times": filtered_laps_for_driver
+            })
+
+        return driverLapDataRaw
+
+    except Exception as e:
+        print(f"Error fetching scatter plot data for race {raceId}: {e}")
+        raise HTTPException(status_code=500, detail=f"An error occurred while fetching race data: {e}")
