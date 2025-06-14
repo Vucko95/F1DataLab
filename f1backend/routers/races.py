@@ -12,6 +12,9 @@ from settings.config import *
 from settings.db import Session, get_database_session
 from sqlalchemy import desc, func
 from sqlalchemy.orm import Session, joinedload
+import time
+import numpy as np
+from sqlalchemy import func, and_
 
 router = APIRouter()
 def get_driver_standings_from_db(year: int, db: Session):
@@ -994,33 +997,54 @@ async def get_race_lap_times_for_scatter_plot(raceId: int, db: Session = Depends
             .all()
         )
 
-        driverLapDataRaw = []
+        top_driver_ids = [driver.driverId for driver in top_10_drivers_query]
 
-        LAPS_TO_REMOVE_PER_DRIVER = 6 
-
-        for driver_id, driver_ref, forename, surname in top_10_drivers_query:
-            all_laps_for_driver_raw = (
-                db.query(LapTime.lap, LapTime.milliseconds)
-                .filter(LapTime.raceId == raceId, LapTime.driverId == driver_id)
-                .order_by(LapTime.lap.asc())
-                .all()
+        all_relevant_lap_times = (
+            db.query(LapTime.driverId, LapTime.lap, LapTime.milliseconds)
+            .filter(
+                and_(
+                    LapTime.raceId == raceId,
+                    LapTime.driverId.in_(top_driver_ids),
+                    LapTime.milliseconds.isnot(None)
+                )
             )
+            .order_by(LapTime.driverId, LapTime.lap.asc())
+            .all()
+        )
 
-            laps_data_prepared = [
-                {"lap": lp.lap, "time": lp.milliseconds}
-                for lp in all_laps_for_driver_raw if lp.milliseconds is not None
-            ]
+        laps_by_driver_id: Dict[int, List[Dict[str, int]]] = {}
+        for lap_entry in all_relevant_lap_times:
+            if lap_entry.driverId not in laps_by_driver_id:
+                laps_by_driver_id[lap_entry.driverId] = []
+            laps_by_driver_id[lap_entry.driverId].append({
+                "lap": lap_entry.lap,
+                "time": lap_entry.milliseconds
+            })
+
+        driverLapDataRaw = []
+        OUTLIER_THRESHOLD_MS = 7 * 1000
+
+        for driver_data in top_10_drivers_query:
+            driver_id = driver_data.driverId
+            driver_ref = driver_data.driverRef
+            forename = driver_data.forename
+            surname = driver_data.surname
+
+            laps_data_prepared = laps_by_driver_id.get(driver_id, [])
+
+            filtered_laps_for_driver = []
 
             if laps_data_prepared:
-                # Sort all laps by time (milliseconds) in descending order (slowest first)
-                laps_data_prepared.sort(key=lambda x: x['time'], reverse=True)
+                lap_times_ms = [lp['time'] for lp in laps_data_prepared]
+                
+                if len(lap_times_ms) > 0:
+                    median_lap_time = np.median(lap_times_ms)
+                    
+                    filtered_laps_for_driver = [
+                        lap_info for lap_info in laps_data_prepared
+                        if abs(lap_info['time'] - median_lap_time) <= OUTLIER_THRESHOLD_MS
+                    ]
 
-                # Remove the top X slowest laps
-                filtered_laps_for_driver = laps_data_prepared[LAPS_TO_REMOVE_PER_DRIVER:]
-            else:
-                filtered_laps_for_driver = [] # No laps found or all removed
-
-            # Sort laps by lap number in ascending order so laps are in order 
             filtered_laps_for_driver.sort(key=lambda x: x['lap'])
 
             driver_name = f"{forename} {surname}" if forename and surname else driver_ref
@@ -1036,4 +1060,64 @@ async def get_race_lap_times_for_scatter_plot(raceId: int, db: Session = Depends
 
     except Exception as e:
         print(f"Error fetching scatter plot data for race {raceId}: {e}")
+        raise HTTPException(status_code=500, detail=f"An error occurred while fetching race data: {e}")
+
+
+@router.get("/race/details/{raceId}/average", tags=["Race"], summary="Get average lap times for the 10 fastest drivers by average lap time in a specific race, excluding slowest laps.")
+async def get_race_average_lap_times(raceId: int, db: Session = Depends(get_database_session)):
+    try:
+        all_participating_drivers_query = (
+            db.query(Driver.driverId, Driver.driverRef, Driver.forename, Driver.surname)
+            .join(Result, Driver.driverId == Result.driverId)
+            .filter(Result.raceId == raceId)
+            .all()
+        )
+
+        all_drivers_with_calculated_averages = [] 
+
+        LAPS_TO_REMOVE_PER_DRIVER = 6 
+
+        for driver_id, driver_ref, forename, surname in all_participating_drivers_query:
+            all_laps_for_driver_raw = (
+                db.query(LapTime.lap, LapTime.milliseconds)
+                .filter(LapTime.raceId == raceId, LapTime.driverId == driver_id)
+                .order_by(LapTime.lap.asc())
+                .all()
+            )
+
+            laps_data_prepared = [
+                {"lap": lp.lap, "time": lp.milliseconds}
+                for lp in all_laps_for_driver_raw if lp.milliseconds is not None
+            ]
+
+            filtered_laps_for_average = []
+            if laps_data_prepared:
+                laps_data_prepared.sort(key=lambda x: x['time'], reverse=True)
+                filtered_laps_for_average = laps_data_prepared[min(LAPS_TO_REMOVE_PER_DRIVER, len(laps_data_prepared)):]
+
+            average_milliseconds = None
+            if filtered_laps_for_average:
+                total_milliseconds = sum(lap['time'] for lap in filtered_laps_for_average)
+                average_milliseconds = round(total_milliseconds / len(filtered_laps_for_average))
+            
+            if average_milliseconds is not None:
+                driver_name = f"{forename} {surname}" if forename and surname else driver_ref
+                driver_color = color_mapping.get(driver_ref.lower(), "#000000")
+
+                all_drivers_with_calculated_averages.append({
+                    "driverName": driver_name,
+                    "averageMilliseconds": average_milliseconds,
+                    "driverRef": driver_ref,
+                    "driverId": driver_id,
+                    "color": driver_color
+                })
+        
+        all_drivers_with_calculated_averages.sort(key=lambda x: x['averageMilliseconds'])
+
+        top_10_fastest_drivers = all_drivers_with_calculated_averages[:10]
+
+        return top_10_fastest_drivers
+
+    except Exception as e:
+        print(f"Error fetching average lap times for race {raceId}: {e}")
         raise HTTPException(status_code=500, detail=f"An error occurred while fetching race data: {e}")
