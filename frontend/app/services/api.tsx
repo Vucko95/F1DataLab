@@ -151,6 +151,13 @@ export const fetchRacePitStopDetails = async (raceId: number) => {
   return await fetchData(`${API_BASE_URL}/race/details/${raceId}/pitstop`);
 };
 
+export const fetchRaceScatterPlot = async (raceId: number) => {
+  return await fetchData(`${API_BASE_URL}/race/details/${raceId}/scatter`);
+};
+export const fetchAverageLapTimes = async (raceId: number) => {
+  return await fetchData(`${API_BASE_URL}/race/details/${raceId}/average`);
+};
+
 
 
 
