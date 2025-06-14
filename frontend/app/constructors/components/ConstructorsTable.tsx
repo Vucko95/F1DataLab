@@ -32,8 +32,8 @@ export function ConstructorsTable({ year }: TableCardProps) {
 
   return (
 <Card className="p-4 h-full flex flex-col">
-  <CardHeader className="p-4 pb-6 flex justify-center items-center responsive-header">
-    Constructor Standings
+  <CardHeader className="p-2 flex justify-center items-center responsive-header">
+            <h1 className="text-2xl font-bold text-primary mb-2 font-mono ">Constructor Points</h1>
   </CardHeader>
 
   <Table className="responsive-text">

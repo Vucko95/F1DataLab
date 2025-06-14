@@ -41,11 +41,12 @@ export function BarCard({ year }: BarGraphProps) {
   return (
     <Card className="h-[44vh] w-[78vh] pr-8 flex flex-col items-center justify-between">
       <CardHeader className="absolute">
-        <h1 className="text-lg">Average Constructor Points per Race</h1>
+        <h1 className="text-2xl font-bold text-primary mb-2 font-mono ">Average Constructor Points per race in Season</h1>
+
       </CardHeader>
       <CardContent className="w-[80vh] pt-2">
         <ChartContainer config={{}}>
-          <BarChart data={chartData}>
+          <BarChart data={chartData} margin={{ top: 50, right: 10, bottom: 10, left: 10 }}>
             <XAxis
               axisLine={false}
               tickLine={false}

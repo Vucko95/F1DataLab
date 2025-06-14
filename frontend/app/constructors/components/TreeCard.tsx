@@ -42,7 +42,7 @@ export function TreeCard({ year }: TreeGraphProps) {
   return (
     <Card className="h-[44vh] w-full max-w-[78vh] flex flex-col items-center justify-between">
       <CardHeader className="absolute">
-        <h1 className="text-lg">Constructor Points Full Season TreeMap</h1>
+        <h1 className="text-2xl font-bold text-primary mb-2 font-mono ">Constructor Points Full Season</h1>
       </CardHeader>
 
       <CardContent className="pt-14 w-full h-full">

@@ -44,7 +44,7 @@ export function TreeCardConstructorsRace({ raceId }: TreeGraphProps) {
   return (
     <Card className="h-[58.6vh] w-full  flex flex-col items-center justify-between">
       <CardHeader className="absolute">
-        <h1 className="text-lg">Constructor Points for the selected Race</h1>
+        <h1 className="text-2xl font-bold text-primary mb-2 font-mono ">Constructor Points for the selected Race</h1>  
       </CardHeader>
       <CardContent className="pt-14 w-full h-full">
         <ResponsiveContainer>

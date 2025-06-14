@@ -35,7 +35,7 @@ export default function DriversPage() {
           <DriversTable year={selectedYear} />
         </div>
 
-        <div className="col-span-7 w-full">
+        <div className="col-span-6 w-full">
           <LineCard year={selectedYear} />
         </div>
 
@@ -43,7 +43,7 @@ export default function DriversPage() {
           <BarCard year={selectedYear} />
         </div>
 
-        <div className="col-span-5 w-full">
+        <div className="col-span-4 w-full">
           <TreeCard year={selectedYear} />
         </div>
       </div>

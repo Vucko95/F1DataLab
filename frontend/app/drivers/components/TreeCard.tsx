@@ -76,14 +76,14 @@ export function TreeCard({ year }: TreeGraphProps) {
 
 
   return (
-    <Card className="h-[44vh] w-[78vh] flex flex-col items-center justify-between">
-      <CardHeader
-        className="absolute">
-        <h1>Driver Points for season</h1>
+    <Card className="h-[44vh] w-full max-w-[78vh] flex flex-col items-center justify-between">
+      <CardHeader className="absolute">
+        <h1 className="text-2xl font-bold text-primary mb-2 font-mono ">Driver Points Full Season</h1>
       </CardHeader>
-      <CardContent className="pt-14 w-full h-full  ">
+
+      <CardContent className="pt-14 w-full h-full">
         <ResponsiveContainer width="100%" height="100%">
-          <Treemap width={700} height={350} data={transformedData} dataKey="size" stroke="#000000" fill="#000000" />
+          <Treemap  data={transformedData} dataKey="size" stroke="#000000" fill="#000000" />
         </ResponsiveContainer>
       </CardContent>
     </Card>

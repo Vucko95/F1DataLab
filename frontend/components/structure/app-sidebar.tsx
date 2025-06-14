@@ -9,7 +9,7 @@ const navigationItems = [
   { title: "Home", url: "/", icon: House },
   { title: "Races", url: "/races", icon: Flag },
   { title: "Drivers", url: "/drivers", icon: Car },
-  { title: "Teams", url: "/constructors", icon: Users },
+  { title: "Constructors", url: "/constructors", icon: Users },
   { title: "Compare", url: "/compare", icon: GitCompare },
 ];
 
