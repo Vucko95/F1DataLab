@@ -12,16 +12,14 @@ export default function Home() {
   return (
     <div className="p-4 pl-8"> 
       <ModeToggle /> 
-        <h1 className="text-5xl font-extrabold text-center mb-2 text-primary">Formula 1 DataLab</h1>
-<div className="text-center mb-4 max-w-3xl mx-auto">
-  <p className="text-xl text-muted-foreground mb-2">
-  The primary goal of this site is to provide a user-friendly platform for quick, interactive exploration and visualization of historical Formula 1 data across various categories.
-  </p>
-  <p className="text-xl text-muted-foreground mb-2">
-    Website is work in progress, and will be updated with more features and data visualizations.
-  </p>
-  <p className="text-lg text-primary-foreground/70">Start your exploration with the key statistics below, or dive deeper into specific categories.</p>
-</div>
+<h1 className="text-5xl font-extrabold text-center mb-2 bg-gradient-to-r from-orange-800 to-yellow-300 bg-clip-text text-transparent drop-shadow-2xl">
+  Formula 1 DataLab
+</h1>
+    <div className="text-center mb-4 max-w-6xl mx-auto">
+    <p className="text-xl text-gray-600 dark:text-gray-400 font-medium mb-2 opacity-80">
+      Website is work in progress, and will be updated with more features in future. The goal is to provide a user-friendly platform for quick, interactive exploration and visualization of historical Formula 1 data across different racing aspects.
+    </p>
+    </div>
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Card className="flex flex-col items-center justify-center p-4 text-center">
@@ -80,10 +78,10 @@ export default function Home() {
               <div className="flex items-center justify-between p-3 rounded-md border">
                 <div className="flex items-center gap-2">
                   <Crown className="h-5 w-5 text-amber-500" />
-                  <p className="text-lg font-semibold">Most Championships:</p>
+                  <p className="text-lg font-semibold">Most Champs:</p>
                 </div>
                 
-                <Badge variant="outline" className="text-base px-3 py-1 bg-amber-500 text-black">L. Hamilton (7)</Badge>
+                <Badge variant="outline" className="text-base px-3 py-1 bg-amber-500 text-black">Hamilton/M.Scum. (7)</Badge>
               </div>
               <div className="flex items-center justify-between p-3 rounded-md border">
                 <div className="flex items-center gap-2">
