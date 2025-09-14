@@ -1,6 +1,6 @@
 "use client";
-
-import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip } from "recharts";
+import { ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip,LabelList } from "recharts";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { ChartContainer, ChartTooltipContent, ChartConfig } from "@/components/ui/chart";
@@ -54,40 +54,61 @@ export function BarCard({ year }: BarGraphProps) {
     color: driver.color,
   }));
   return (
-    <Card className="h-[44vh] w-[78vh] pr-8 flex flex-col items-center justify-between">
-      <CardHeader
-        className="absolute">
-        <h1 className="text-2xl font-bold text-primary mb-2 font-mono ">Average Driver Points for the Season</h1>
-
-      </CardHeader>
-      <CardContent className="w-[80vh] pt-2">
-        <ChartContainer config={{}}>
-          <BarChart data={chartData} margin={{ top: 50, right: 10, bottom: 10, left: 10 }}>
-            <XAxis
-              axisLine={false}
-              tickLine={false}
-              dataKey="name"
-              tickFormatter={(name) => name?.slice(0, 3)}
-              tick={{ fontSize: 15, fontWeight: "bold", fill: "#888" }}
-            />
-            <YAxis
-              tickLine={false}
-              tick={{ fontSize: 14, fontWeight: "bold", fill: "#333" }}
-              axisLine={false}
-            />
-            <Tooltip content={<ChartTooltipContent indicator="dashed" />} />
-            <Bar dataKey="value" radius={5} barSize={55}>
-              {chartData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  stroke="black"
-                  strokeWidth={0.5}
-                  fill={entry.color || "#888888"}
+    <Card className="h-[44vh] w-full max-w-[78vh] flex flex-col items-center justify-between">
+      <CardContent className="p-2 w-full h-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <ChartContainer config={{}}>
+            <BarChart
+              data={chartData}
+              margin={{ top: 50, right: 10, bottom: 10, left: -30 }}
+            >
+              <text
+                x="50%"
+                y={30}
+                textAnchor="middle"
+                fontSize={20}
+                fontFamily="monospace"
+                // fontWeight="bold"
+                fill="hsl(var(--primary))"
+              >
+                Average Points per Season
+              </text>
+              {/*
+                <XAxis
+                  axisLine={false}
+                  tickLine={false}
+                  dataKey="name"
+                  tickFormatter={(name) => name?.slice(0, 3)}
+                  tick={{ fontSize: 15, fontWeight: "bold", fill: "#888" }}
                 />
-              ))}
-            </Bar>
-          </BarChart>
-        </ChartContainer>
+              */}
+              <YAxis
+                tickLine={false}
+                tick={{ fontSize: 14, fontWeight: "bold", fill: "#333" }}
+                axisLine={false}
+              />
+              <Tooltip content={<ChartTooltipContent indicator="dashed" />} />
+              <Bar dataKey="value" radius={5} barSize={55}>
+                <LabelList
+                  dataKey="name"
+                  position="insideTop"
+                  angle={-90}
+                  offset={-30}
+                  style={{ fontWeight: "bold", fontSize: 16 }}
+                  dx={-4}
+                />
+                {chartData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    stroke="black"
+                    strokeWidth={0.5}
+                    fill={entry.color || "#888888"}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ChartContainer>
+        </ResponsiveContainer>
       </CardContent>
     </Card>
   );
