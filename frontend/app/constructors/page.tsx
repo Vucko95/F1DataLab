@@ -16,29 +16,30 @@ export default function ConstructorsPage() {
   };
 // TODO ! FIX CONSTRUCTOR GRAPH TITLES
   return (
-    <div className="p-4 pl-8">
+    <div className="p-4 pl-8 ">
+
       <ModeCoffe />
       <ModeToggle />
 
-      <div className="pb-4 pt-0">
+      <div className="pb-4 pt-8 md:pt-0">
         <DropDown onYearChange={handleYearChange} />
       </div>
 
-      <div className="grid grid-cols-10 gap-4 justify-items-center">
+      <div className="grid grid-cols-1 md:grid-cols-10 gap-4 justify-items-center">
 
-        <div className="col-span-3 w-full">
+        <div className="col-span-1 md:col-span-3 w-full">
           <ConstructorsTable year={selectedYear} />
         </div>
 
-        <div className="col-span-6 w-full">
+        <div className="col-span-1 md:col-span-6 w-full">
           <LineCard year={selectedYear} />
         </div>
 
-        <div className="col-span-5 w-full">
+        <div className="col-span-1 md:col-span-5 w-full">
           <BarCard year={selectedYear} />
         </div>
 
-        <div className="col-span-4 w-full">
+        <div className="col-span-1 md:col-span-4 w-full">
           <TreeCard year={selectedYear} />
         </div>
       </div>

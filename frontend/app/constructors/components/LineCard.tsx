@@ -41,7 +41,7 @@ const constructorColors: { [key: string]: string } = {
 };
 // TODO Add Full names instead of DB Generated ones
 const constructorNames: { [key: string]: string } = {
-  red_bull: "Red Bull Racing",
+  red_bull: "RedBull",
   mercedes: "Mercedes",
   ferrari: "Ferrari",
   mclaren: "McLaren",
