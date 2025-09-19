@@ -660,33 +660,33 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
                 }
             )
         driver_colors = {
-            'Red Bull Racing': '#1E41FF',
+            'RedBull': '#1E41FF',
             'Ferrari': '#D92A3E',
             'Mercedes': '#00D2BE',
             'McLaren': '#FF8700',
-            'Aston Martin': '#006F62',
+            'Aston': '#006F62',
             'Alpine': '#2173B8',
             'Alfa Romeo': '#fff888',
             'AlphaTauri': '#2E1F26',
             'Williams': '#0092DA',
-            'Haas F1 Team': '#C6C6C6',
+            'Haas': '#C6C6C6',
             "Sauber": "#DE3126",
-            "RB F1 Team": "#223971",
+            "RacingBulls": "#223971",
         }
 
         constructor_map = {
-            9: 'Red Bull Racing',
+            9: 'RedBull',
             6: 'Ferrari',
             131: 'Mercedes',
             1: 'McLaren',
-            117: 'Aston Martin',
+            117: 'Aston',
             51: 'Alfa Romeo',
             213: 'AlphaTauri',
             3: 'Williams',
-            210: 'Haas F1 Team',
+            210: 'Haas',
             214: 'Alpine',
             15: "Sauber",
-            215: "RB F1 Team",
+            215: "RacingBulls",
         }
         for driver in driver_standings:
             constructor_name = constructor_map.get(driver['constructorId'], 'Unknown')

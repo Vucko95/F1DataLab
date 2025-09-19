@@ -134,7 +134,7 @@ def append_colors_to_bar_graph_constructors(response_data):
 
 def get_constructor_colors():
     return {
-        'Red Bull Racing': '#1E41FF',
+        'RedBull': '#1E41FF',
         'Ferrari': '#D92A3E',
         'Mercedes': '#00D2BE',
         'McLaren': '#FF8700',
@@ -150,7 +150,7 @@ def get_constructor_colors():
 
 def get_constructor_mapping():
     return {
-        9: 'Red Bull Racing',
+        9: 'RedBull',
         6: 'Ferrari',
         131: 'Mercedes',
         1: 'McLaren',

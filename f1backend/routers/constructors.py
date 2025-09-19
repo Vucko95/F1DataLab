@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse
 
 router = APIRouter()
 driver_colors = {
-    'Red Bull Racing': '#1E41FF',
+    'RedBull': '#1E41FF',
     'Ferrari': '#D92A3E',
     'Mercedes': '#00D2BE',
     'McLaren': '#FF8700',
@@ -26,7 +26,7 @@ driver_colors = {
 }
 
 constructor_map = {
-    9: 'Red Bull Racing',
+    9: 'RedBull',
     6: 'Ferrari',
     131: 'Mercedes',
     1: 'McLaren',
@@ -34,10 +34,10 @@ constructor_map = {
     51: 'Alfa Romeo',
     213: 'AlphaTauri',
     3: 'Williams',
-    210: 'Haas F1 Team',
+    210: 'Haas',
     214: 'Alpine',
     15: "Sauber",
-    215: "RB F1 Team",
+    215: "Racing Bulls",
 }
 @router.get("/standings/constructors/{year}",tags=["Constructorr Standings"],summary="Constructor standigns for specific year.")
 async def constructor_standings(year: int, db: Session = Depends(get_database_session)):
@@ -88,7 +88,7 @@ async def constructor_standings(year: int, db: Session = Depends(get_database_se
 async def driver_standings(year: int, db: Session = Depends(get_database_session)):
     try:
         constructor_map = {
-            9: 'Red Bull Racing',
+            9: 'RedBull',
             6: 'Ferrari',
             131: 'Mercedes',
             1: 'McLaren',
@@ -139,7 +139,7 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
         )
         # TODO ! REMOVE HARCDODED COLORS
         driver_colors = {
-            'Red Bull Racing': '#1E41FF',
+            'RedBull': '#1E41FF',
             'Ferrari': '#D92A3E',
             'Mercedes': '#00D2BE',
             'McLaren': '#FF8700',
@@ -154,7 +154,7 @@ async def driver_standings(year: int, db: Session = Depends(get_database_session
         }
 
         constructor_map = {
-            9: 'Red Bull Racing',
+            9: 'RedBull',
             6: 'Ferrari',
             131: 'Mercedes',
             1: 'McLaren',
