@@ -18,6 +18,7 @@ import { RacePaceCardHC } from "@/app/races/components/RacePaceCardHC";
 import { ModeToggle } from "@/components/ui/ModeToggle"
 import { DropDown } from "@/app/races/components/DropDown"
 import { DropDownRace } from "@/app/races/components/DropDownRace"
+import { ModeCoffe } from "@/components/ui/ModeCoffe";
 // import { Card, CardContent } from "@/components/ui/card";
 
 
@@ -41,21 +42,22 @@ export default function RacesPage() {
   return (
 
     <div className="p-4 pl-8">
+      <ModeCoffe />
       <ModeToggle />
-      <div className="pb-4 pt-0 flex gap-x-4">
+      <div className="pb-4 pt-8 md:pt-0 flex gap-x-4">
         <DropDown onYearChange={handleYearChange} />
         <DropDownRace year={selectedYear} onRaceChange={handleRaceChange} />
       </div>
 
-      <div className="grid grid-cols-10 gap-4 justify-items-center">
+      <div className="grid grid-cols-1 md:grid-cols-10 gap-4 justify-items-center">
 
-        <div className="col-span-3 w-full">
+        <div className="col-span-1 md:col-span-3 w-full">
         <RaceTable raceId={selectedRace} />
         </div>
-          <div className="col-span-7 w-full">
+          <div className="col-span-1 md:col-span-7 w-full">
         <RaceScatterPlot raceId={selectedRace} />
         </div>
-        <div className="col-span-6 w-full">
+        <div className="col-span-1 md:col-span-6 w-full">
         <AverageLapTimes raceId={selectedRace} />
         </div>
         {/* <div className="col-span-3 w-full">
@@ -67,12 +69,12 @@ export default function RacesPage() {
         <PitStops raceId={selectedRace} />
         </div> */}
 
-        <div className="col-span-4 w-full">
+        <div className="col-span-1 md:col-span-4 w-full">
         <TreeCardConstructorsRace raceId={selectedRace} />
         </div>
 
 
-        <div className="col-span-6 w-full">
+        <div className="col-span-1 md:col-span-6 w-full">
         </div>
 
 

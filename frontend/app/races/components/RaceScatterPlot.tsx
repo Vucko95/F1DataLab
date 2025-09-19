@@ -87,8 +87,8 @@ export function RaceScatterPlot({ raceId }: DriverLapTimesProps) {
 
   return (
     <Card className="h-[58.6vh] w-full flex flex-col items-center justify-between">
-      <CardHeader className="absolute z-10">
-        <h1 className="text-2xl font-bold text-primary mb-2 font-mono ">Lap Times for the Selected Race</h1>
+      <CardHeader className="absolute">
+        <h1 className="text-xl  text-primary mb-2 font-mono ">Race Lap Time</h1>
       </CardHeader>
       <CardContent className="pt-14 w-full h-full">
         <ResponsiveContainer width="100%" height="100%">

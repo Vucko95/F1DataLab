@@ -121,7 +121,7 @@ export function AppSidebar({ isMobile = false, onNavigate }: { isMobile?: boolea
 
         <SidebarSeparator />
 
-        <SidebarFooter className="p-2">
+        {/* <SidebarFooter className="p-2">
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
               <SidebarMenuItem>
@@ -141,7 +141,7 @@ export function AppSidebar({ isMobile = false, onNavigate }: { isMobile?: boolea
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarFooter>
+        </SidebarFooter> */}
       </SidebarContent>
     </Sidebar>
   );
