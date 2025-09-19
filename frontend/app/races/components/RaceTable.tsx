@@ -51,14 +51,14 @@ export function RaceTable({ raceId }: RaceIdProps) {
       <CardContent className="h-full flex flex-col justify-between">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="text-center">Pos</TableHead>
-              <TableHead className="text-center">N</TableHead>
-              <TableHead className="text-center">Driver</TableHead>
-              <TableHead className="text-center">Change</TableHead>
-              <TableHead className="text-center">Constructor</TableHead>
-              <TableHead className="text-center">Time</TableHead>
-            </TableRow>
+  <TableRow>
+    <TableHead className="text-center">Pos</TableHead>
+    <TableHead className="text-center">N</TableHead>
+    <TableHead className="text-center">Driver</TableHead>
+    <TableHead className="text-center hidden sm:table-cell">Change</TableHead>
+    <TableHead className="text-center hidden md:table-cell">Constructor</TableHead> 
+    <TableHead className="text-center hidden md:table-cell">Time</TableHead>
+  </TableRow>
           </TableHeader>
           <TableBody>
             {paginatedDrivers.map((driver) => {
@@ -85,13 +85,13 @@ export function RaceTable({ raceId }: RaceIdProps) {
                     <Image src={`https://flagcdn.com/${nationalityFlag}.svg`} alt={`${driver.nationality} Flag`} width={20} height={20} className="rounded-sm" />
                   </TableCell>
                   <TableCell>{driver.forename} {driver.surname}</TableCell>
-                  <TableCell className={positionChangeColorClass}>
-                    {positionChangeText}
-                  </TableCell>
-                  <TableCell className="flex justify-center">
+                  <TableCell className={`${positionChangeColorClass} hidden sm:table-cell`}>
+                      {positionChangeText}
+                    </TableCell>
+                  <TableCell className="flex justify-center hidden md:table-cell">
                     <Image src={`/images/constructors/${driver.constructorId}.webp`} alt="Constructor Logo" width={25} height={25} className="rounded-sm" />
                   </TableCell>
-                  <TableCell>{driver.time || 'N/A'}</TableCell>
+                  <TableCell className="hidden md:table-cell">{driver.time || 'N/A'}</TableCell>
                 </TableRow>
               );
             })}
