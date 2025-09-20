@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarSeparator } from "@/components/ui/sidebar";
+import { SheetClose } from "@/components/ui/sheet";
 import { House, Car, GitCompare, Flag, Mail, Users } from "lucide-react";
 import Image from "next/image";
 
@@ -14,15 +15,10 @@ const navigationItems = [
 ];
 
 
-export function AppSidebar({ isMobile = false, onNavigate }: { isMobile?: boolean; onNavigate?: () => void }) {
-
+export function AppSidebar({ isMobile = false }: { isMobile?: boolean }) {
   const pathname = usePathname();
 
   if (isMobile) {
-    const handleNavigation = (url: string) => {
-      if (onNavigate) onNavigate();
-      // You can add any additional logic here if needed
-    };
     return (
       <div className="p-4 bg-background text-center min-h-full">
         <div className="flex flex-col items-center mb-4">
@@ -49,15 +45,15 @@ export function AppSidebar({ isMobile = false, onNavigate }: { isMobile?: boolea
         </div>
         <nav className="flex flex-col gap-2 items-center">
           {navigationItems.map((item) => (
-            <Link
-              key={item.title}
-              href={item.url}
-              className="flex items-center gap-2 px-4 py-2 rounded hover:bg-orange-100 dark:hover:bg-yellow-900 text-lg font-medium w-full justify-center"
-              onClick={() => handleNavigation(item.url)}
-            >
-              <item.icon className="h-5 w-5" />
-              <span>{item.title}</span>
-            </Link>
+            <SheetClose asChild key={item.title}>
+              <Link
+                href={item.url}
+                className="flex items-center gap-2 px-4 py-2 rounded hover:bg-orange-100 dark:hover:bg-yellow-900 text-lg font-medium w-full justify-center"
+              >
+                <item.icon className="h-5 w-5" />
+                <span>{item.title}</span>
+              </Link>
+            </SheetClose>
           ))}
         </nav>
       </div>
