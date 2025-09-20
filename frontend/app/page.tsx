@@ -13,7 +13,7 @@ export default function Home() {
     <div className="p-4 pl-8"> 
       <ModeToggle /> 
 <h1 className="text-5xl font-extrabold text-center mb-2 bg-gradient-to-r from-orange-800 to-yellow-300 bg-clip-text text-transparent drop-shadow-2xl">
-  Formula 1 DataLab test-gitpush
+  Formula 1 DataLab
 </h1>
     <div className="text-center mb-4 max-w-6xl mx-auto">
     <p className="text-xl text-gray-600 dark:text-gray-400 font-medium mb-2 opacity-80">
