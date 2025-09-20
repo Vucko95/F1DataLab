@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile.frontend_prod
       args:
         NEXT_PUBLIC_BACKEND_URL: https://formula1datalab.com/api
+    image: f1datalab-frontend:latest
     container_name: f1_frontend
     # ports:
     #   - "3000:3000"
@@ -32,7 +33,7 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: Dockerfile.nginx_prod
+      dockerfile: nginx/Dockerfile.nginx_prod
     container_name: f1_nginx
     ports:
       - "80:80"

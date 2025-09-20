@@ -1,13 +1,8 @@
 
-FROM docker.io/library/node:20-alpine AS frontend
-WORKDIR /app
-COPY frontend/package*.json ./
-RUN npm install
-COPY frontend/ .
-RUN npm run build
-
+# This Dockerfile no longer builds the frontend.
+# It copies assets from the image built by the 'frontend' service.
 FROM nginx:stable-alpine
 
-
-COPY --from=frontend /app/.next/static /app/.next/static
-COPY --from=frontend /app/public /app/public
+# Copy static assets from the pre-built frontend image
+COPY --from=f1datalab-frontend:latest /app/.next/static /app/.next/static
+COPY --from=f1datalab-frontend:latest /app/public /app/public
