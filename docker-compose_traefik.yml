@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend_prod
+      args:
+        NEXT_PUBLIC_BACKEND_URL: https://formula1datalab.com/api
+    image: f1datalab-frontend:latest
+    container_name: f1datalab_frontend
+    expose:
+      - "3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - traefik_public
+    labels:
+      # Enable Traefik
+      - "traefik.enable=true"
+
+      # Frontend router (main site)
+      - "traefik.http.routers.f1datalab-frontend.rule=Host(`formula1datalab.com`) || Host(`www.formula1datalab.com`)"
+      - "traefik.http.routers.f1datalab-frontend.entrypoints=websecure"
+      - "traefik.http.routers.f1datalab-frontend.tls=true"
+      - "traefik.http.routers.f1datalab-frontend.tls.certresolver=cloudflare"
+      - "traefik.http.routers.f1datalab-frontend.priority=10"
+
+      # Service definition
+      - "traefik.http.services.f1datalab-frontend.loadbalancer.server.port=3000"
+
+  backend:
+    build:
+      context: ./f1backend
+      dockerfile: Dockerfile.backend_prod
+    container_name: f1datalab_backend
+    environment:
+      DATABASE_URL: mysql://root:${MYSQL_ROOT_PASSWORD}@mysql:3306/f1db
+      RUN_MODE: production
+    expose:
+      - "8888"
+    depends_on:
+      - mysql
+    restart: unless-stopped
+    networks:
+      - traefik_public
+      - f1datalab_internal
+    labels:
+      # Enable Traefik
+      - "traefik.enable=true"
+
+      # Backend router (API with StripPrefix)
+      - "traefik.http.routers.f1datalab-backend.rule=Host(`formula1datalab.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.f1datalab-backend.entrypoints=websecure"
+      - "traefik.http.routers.f1datalab-backend.tls=true"
+      - "traefik.http.routers.f1datalab-backend.tls.certresolver=cloudflare"
+      - "traefik.http.routers.f1datalab-backend.priority=100"
+
+      # StripPrefix middleware to remove /api from path
+      - "traefik.http.middlewares.f1datalab-strip-api.stripprefix.prefixes=/api"
+      - "traefik.http.routers.f1datalab-backend.middlewares=f1datalab-strip-api"
+
+      # Service definition
+      - "traefik.http.services.f1datalab-backend.loadbalancer.server.port=8888"
+
+  mysql:
+    image: mysql:latest
+    container_name: f1datalab_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: f1db
+    command: --sql-mode="NO_ENGINE_SUBSTITUTION"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/f1db.sql:/docker-entrypoint-initdb.d/f1db.sql:ro
+    restart: unless-stopped
+    networks:
+      - f1datalab_internal
+
+networks:
+  traefik_public:
+    external: true
+  f1datalab_internal:
+    driver: bridge
+
+volumes:
+  mysql_data:
