@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile.frontend_prod
       args:
         NEXT_PUBLIC_BACKEND_URL: https://formula1datalab.com/api
+        NEXT_PUBLIC_UMAMI_URL: https://formula1datalab.com/analytics
+        NEXT_PUBLIC_UMAMI_WEBSITE_ID: ${UMAMI_WEBSITE_ID}
     image: f1datalab-frontend:latest
     container_name: f1datalab_frontend
     expose:
