@@ -1,11 +1,17 @@
 # F1DataLab - A Formula 1 Data Visualization Site
 
+> ⚠️ **Sunset Notice:** This project is being sunsetted. The successor is **[formula-telemetry.com](https://formula-telemetry.com)**, which offers enhanced features and live telemetry data.
 
-_The current dataset is historical and does not contain the latest racing data. Future updates will incorporate more recent results._
+## Screenshots
+
+![Dashboard Overview](ss1.png)
+*F1DataLab Dashboard - Overview of key statistics and race records*
+
+![Race Analytics](SS2.png)
+*Race Analytics - Detailed lap times and driver performance visualization*
 
 [![App Tech](https://skillicons.dev/icons?i=py,fastapi,next,ts,mysql,docker)](https://skillicons.dev)
 
-### **Live Site:** [**formula1datalab.com**](https://formula1datalab.com/)
 
 F1DataLab is a full-stack web application built to showcase modern development practices and provides a platform to explore and visualize historical racing data.
 
@@ -22,18 +28,6 @@ The application provides an interactive experience for exploring Formula 1 data 
 *   **Frontend:** Next.js 14 with TypeScript, Tailwind CSS, and Recharts for data visualization
 *   **Backend:** Fastapi REST API with SQLAlchemy ORM
 *   **Database:** MySQL for structured F1 racing data
-
-## Containerization & Deployment
-
-The entire application is containerized using Docker, ensuring consistency across development and production environments.
-
-*   **Container Orchestration:** Docker Compose is used to define and manage the multi-container application stack (frontend, backend, and database).
-
-*   **Efficient Production Builds:** The production environment utilizes multi-stage Docker builds to create optimized, production-ready images for both the Next.js frontend and Flask backend.
-
-*   **Reverse Proxy & SSL:**
-    *   [**Traefik**](https://traefik.io/) serves as the modern cloud-native reverse proxy with automatic service discovery via Docker labels.
-    *   [**Let's Encrypt**](https://letsencrypt.org/) integration provides automatic SSL certificate provisioning and renewal, ensuring all traffic is served over HTTPS.
 
 
 ## License
